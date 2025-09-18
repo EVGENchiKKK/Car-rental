@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Регистрация - AutoRent</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>">
+</head>
+<body>
+    <div class="form-container">
+        <form class="form-card" id="registerForm" style="max-width: 500px;">
+            <div class="form-header">
+                <div class="form-icon">👤</div>
+                <h1 class="form-title">Регистрация</h1>
+                <p class="form-subtitle">Создайте аккаунт для аренды автомобилей</p>
+            </div>
+
+            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                <div class="form-field">
+                    <label for="firstName">Имя</label>
+                    <input type="text" id="firstName" name="firstName" placeholder="Иван" required>
+                    <div class="error-message" id="firstNameError"></div>
+                </div>
+
+                <div class="form-field">
+                    <label for="lastName">Фамилия</label>
+                    <input type="text" id="lastName" name="lastName" placeholder="Петров" required>
+                    <div class="error-message" id="lastNameError"></div>
+                </div>
+            </div>
+
+            <div class="form-field">
+                <label for="middleName">Отчество</label>
+                <input type="text" id="middleName" name="middleName" placeholder="Сергеевич">
+                <div class="error-message" id="middleNameError"></div>
+            </div>
+
+            <div class="form-field">
+                <label for="phone">📱 Номер телефона</label>
+                <input type="tel" id="phone" name="phone" placeholder="+7 (999) 123-45-67" required>
+                <div class="error-message" id="phoneError"></div>
+            </div>
+
+            <div class="form-field">
+                <label for="passport">🆔 Паспорт (серия и номер)</label>
+                <input type="text" id="passport" name="passport" placeholder="1234 567890" required>
+                <div class="error-message" id="passportError"></div>
+            </div>
+
+            <div class="form-field">
+                <label for="birthDate">📅 Дата рождения</label>
+                <input type="date" id="birthDate" name="birthDate" required>
+                <div class="error-message" id="birthDateError"></div>
+            </div>
+
+            <div class="form-field">
+                <label for="password">🔒 Пароль</label>
+                <div style="position: relative;">
+                    <input type="password" id="password" name="password" placeholder="Минимум 6 символов" required>
+                    <button type="button" id="togglePassword" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 18px;">👁️</button>
+                </div>
+                <div class="error-message" id="passwordError"></div>
+            </div>
+
+            <div class="form-field">
+                <label for="confirmPassword">🔒 Подтверждение пароля</label>
+                <input type="password" id="confirmPassword" name="confirmPassword" placeholder="Повторите пароль" required>
+                <div class="error-message" id="confirmPasswordError"></div>
+            </div>
+
+            <div class="form-field">
+                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                    <input type="checkbox" id="agreeTerms" name="agreeTerms" required>
+                    <span>Я согласен с <a href="#" style="color: #3b82f6;">условиями использования</a> и <a href="#" style="color: #3b82f6;">политикой конфиденциальности</a></span>
+                </label>
+                <div class="error-message" id="agreeTermsError"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;" id="registerBtn">
+                Зарегистрироваться →
+            </button>
+
+            <div class="text-center">
+                <p style="color: #6b7280; margin-bottom: 1rem;">Уже есть аккаунт?</p>
+                <a href="login.html" class="btn btn-outline" style="width: 100%; text-decoration: none;">
+                    Войти
+                </a>
+            </div>
+
+            <div class="text-center" style="margin-top: 1.5rem;">
+                <a href="index.html" style="color: #6b7280; text-decoration: none; font-size: 0.9rem;">
+                    ← Вернуться на главную
+                </a>
+            </div>
+        </form>
+    </div>
+
+    <script>
+        // Phone formatting
+        function formatPhone(value) {
+            const cleaned = value.replace(/\D/g, '');
+            const match = cleaned.match(/^(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})$/);
+            if (match) {
+                return `+${match[1]} (${match[2]}) ${match[3]}-${match[4]}-${match[5]}`;
+            }
+            return value;
+        }
+
+        // Passport formatting
+        function formatPassport(value) {
+            const cleaned = value.replace(/\D/g, '');
+            const match = cleaned.match(/^(\d{4})(\d{6})$/);
+            if (match) {
+                return `${match[1]} ${match[2]}`;
+            }
+            return value;
+        }
+
+        document.getElementById('phone').addEventListener('input', function(e) {
+            const value = e.target.value;
+            const cleaned = value.replace(/\D/g, '');
+            
+            if (cleaned.length <= 11) {
+                e.target.value = cleaned.length > 0 ? formatPhone(cleaned) : '';
+            }
+        });
+
+        document.getElementById('passport').addEventListener('input', function(e) {
+            const value = e.target.value;
+            const cleaned = value.replace(/\D/g, '');
+            
+            if (cleaned.length <= 10) {
+                e.target.value = cleaned.length > 0 ? formatPassport(cleaned) : '';
+            }
+        });
+
+        // Password toggle
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+
+        // Form validation and submission
+        document.getElementById('registerForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            const registerBtn = document.getElementById('registerBtn');
+            
+            // Clear previous errors
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+            
+            let isValid = true;
+            
+            // Validate first name
+            if (!data.firstName.trim()) {
+                document.getElementById('firstNameError').textContent = 'Введите имя';
+                isValid = false;
+            }
+            
+            // Validate last name
+            if (!data.lastName.trim()) {
+                document.getElementById('lastNameError').textContent = 'Введите фамилию';
+                isValid = false;
+            }
+            
+            // Validate phone
+            if (!data.phone) {
+                document.getElementById('phoneError').textContent = 'Введите номер телефона';
+                isValid = false;
+            } else if (!/^\+?7\d{10}$/.test(data.phone.replace(/\D/g, ''))) {
+                document.getElementById('phoneError').textContent = 'Неверный формат номера телефона';
+                isValid = false;
+            }
+            
+            // Validate passport
+            if (!data.passport) {
+                document.getElementById('passportError').textContent = 'Введите паспортные данные';
+                isValid = false;
+            } else if (!/^\d{4}\s\d{6}$/.test(data.passport)) {
+                document.getElementById('passportError').textContent = 'Неверный формат паспорта';
+                isValid = false;
+            }
+            
+            // Validate birth date
+            if (!data.birthDate) {
+                document.getElementById('birthDateError').textContent = 'Введите дату рождения';
+                isValid = false;
+            } else {
+                const birthDate = new Date(data.birthDate);
+                const age = (Date.now() - birthDate.getTime()) / (1000 * 60 * 60 * 24 * 365.25);
+                if (age < 18) {
+                    document.getElementById('birthDateError').textContent = 'Вам должно быть не менее 18 лет';
+                    isValid = false;
+                } else if (age > 100) {
+                    document.getElementById('birthDateError').textContent = 'Проверьте дату рождения';
+                    isValid = false;
+                }
+            }
+            
+            // Validate password
+            if (!data.password) {
+                document.getElementById('passwordError').textContent = 'Введите пароль';
+                isValid = false;
+            } else if (data.password.length < 6) {
+                document.getElementById('passwordError').textContent = 'Пароль должен содержать минимум 6 символов';
+                isValid = false;
+            }
+            
+            // Validate password confirmation
+            if (data.password !== data.confirmPassword) {
+                document.getElementById('confirmPasswordError').textContent = 'Пароли не совпадают';
+                isValid = false;
+            }
+            
+            // Validate terms agreement
+            if (!data.agreeTerms) {
+                document.getElementById('agreeTermsError').textContent = 'Необходимо согласиться с условиями';
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Show loading
+                registerBtn.innerHTML = '⏳ Регистрация...';
+                registerBtn.disabled = true;
+                
+                // Simulate registration
+                setTimeout(() => {
+                    // Store user data in localStorage for demo
+                    const userData = {
+                        id: Date.now().toString(),
+                        firstName: data.firstName,
+                        lastName: data.lastName,
+                        middleName: data.middleName,
+                        phone: data.phone,
+                        passport: data.passport,
+                        birthDate: data.birthDate
+                    };
+                    
+                    localStorage.setItem('currentUser', JSON.stringify(userData));
+                    
+                    // Redirect to profile
+                    window.location.href = 'profile.html';
+                }, 1500);
+            }
+        });
+
+        // Set max date for birth date (18 years ago)
+        const maxDate = new Date();
+        maxDate.setFullYear(maxDate.getFullYear() - 18);
+        document.getElementById('birthDate').max = maxDate.toISOString().split('T')[0];
+    </script>
+</body>
+</html>

@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Вход - AutoRent</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>">
+</head>
+<body>
+    <div class="form-container">
+        <form class="form-card" id="loginForm">
+            <div class="form-header">
+                <div class="form-icon">🔑</div>
+                <h1 class="form-title">Вход в личный кабинет</h1>
+                <p class="form-subtitle">Войдите в свой аккаунт для доступа ко всем функциям</p>
+            </div>
+
+            <div class="form-field">
+                <label for="phone">📱 Номер телефона</label>
+                <input type="tel" id="phone" name="phone" placeholder="+7 (999) 123-45-67" required>
+                <div class="error-message" id="phoneError"></div>
+            </div>
+
+            <div class="form-field">
+                <label for="password">🔒 Пароль</label>
+                <div style="position: relative;">
+                    <input type="password" id="password" name="password" placeholder="Введите пароль" required>
+                    <button type="button" id="togglePassword" style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); background: none; border: none; cursor: pointer; font-size: 18px;">👁️</button>
+                </div>
+                <div class="error-message" id="passwordError"></div>
+            </div>
+
+            <button type="submit" class="btn btn-primary" style="width: 100%; margin-bottom: 1rem;" id="loginBtn">
+                Войти →
+            </button>
+
+            <div class="text-center">
+                <p style="color: #6b7280; margin-bottom: 1rem;">Нет аккаунта?</p>
+                <a href="register.html" class="btn btn-outline" style="width: 100%; text-decoration: none;">
+                    Зарегистрироваться
+                </a>
+            </div>
+
+            <div class="text-center" style="margin-top: 1.5rem;">
+                <a href="index.html" style="color: #6b7280; text-decoration: none; font-size: 0.9rem;">
+                    ← Вернуться на главную
+                </a>
+            </div>
+        </form>
+
+        <!-- Demo credentials hint -->
+        <div style="max-width: 400px; margin-top: 1.5rem; padding: 1rem; background: #fef3c7; border: 2px solid #f59e0b; border-radius: 12px;">
+            <p style="color: #92400e; text-align: center; margin: 0; font-size: 0.9rem;">
+                <strong>Демо-вход:</strong> Введите любой номер телефона и пароль (мин. 6 символов)
+            </p>
+        </div>
+    </div>
+
+    <script>
+        // Phone formatting
+        function formatPhone(value) {
+            const cleaned = value.replace(/\D/g, '');
+            const match = cleaned.match(/^(\d{1})(\d{3})(\d{3})(\d{2})(\d{2})$/);
+            if (match) {
+                return `+${match[1]} (${match[2]}) ${match[3]}-${match[4]}-${match[5]}`;
+            }
+            return value;
+        }
+
+        document.getElementById('phone').addEventListener('input', function(e) {
+            const value = e.target.value;
+            const cleaned = value.replace(/\D/g, '');
+            
+            if (cleaned.length <= 11) {
+                e.target.value = cleaned.length > 0 ? formatPhone(cleaned) : '';
+            }
+        });
+
+        // Password toggle
+        document.getElementById('togglePassword').addEventListener('click', function() {
+            const passwordInput = document.getElementById('password');
+            const type = passwordInput.getAttribute('type') === 'password' ? 'text' : 'password';
+            passwordInput.setAttribute('type', type);
+            this.textContent = type === 'password' ? '👁️' : '🙈';
+        });
+
+        // Form validation and submission
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const phone = document.getElementById('phone').value;
+            const password = document.getElementById('password').value;
+            const phoneError = document.getElementById('phoneError');
+            const passwordError = document.getElementById('passwordError');
+            const loginBtn = document.getElementById('loginBtn');
+            
+            // Clear previous errors
+            phoneError.textContent = '';
+            passwordError.textContent = '';
+            
+            let isValid = true;
+            
+            // Validate phone
+            if (!phone) {
+                phoneError.textContent = 'Введите номер телефона';
+                isValid = false;
+            } else if (!/^\+?7\d{10}$/.test(phone.replace(/\D/g, ''))) {
+                phoneError.textContent = 'Неверный формат номера телефона';
+                isValid = false;
+            }
+            
+            // Validate password
+            if (!password) {
+                passwordError.textContent = 'Введите пароль';
+                isValid = false;
+            } else if (password.length < 6) {
+                passwordError.textContent = 'Пароль должен содержать минимум 6 символов';
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Show loading
+                loginBtn.innerHTML = '⏳ Вход...';
+                loginBtn.disabled = true;
+                
+                // Simulate login
+                setTimeout(() => {
+                    // Store user data in localStorage for demo
+                    const userData = {
+                        id: '1',
+                        firstName: 'Иван',
+                        lastName: 'Петров',
+                        middleName: 'Сергеевич',
+                        phone: phone,
+                        passport: '1234 567890',
+                        birthDate: '1990-01-15'
+                    };
+                    
+                    localStorage.setItem('currentUser', JSON.stringify(userData));
+                    
+                    // Redirect to profile
+                    window.location.href = 'profile.html';
+                }, 1500);
+            }
+        });
+    </script>
+</body>
+</html>

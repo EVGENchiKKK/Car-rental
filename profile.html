@@ -1,0 +1,414 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Личный кабинет - AutoRent</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">🚗</div>
+                    <div>
+                        <h1>AutoRent</h1>
+                        <p>На любой случай</p>
+                    </div>
+                </a>
+
+                <div class="nav-menu">
+                    <a href="index.html" class="nav-item">Главная</a>
+                    <a href="branches.html" class="nav-item">Филиалы</a>
+                    <a href="booking.html" class="nav-item">Бронирование</a>
+                    <a href="cars.html" class="nav-item">Автомобили</a>
+                </div>
+
+                <div class="user-menu" id="userMenu">
+                    <!-- Will be populated by JS -->
+                </div>
+
+                <button class="mobile-menu-btn">☰</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Личный кабинет</h1>
+            <p class="page-subtitle">Управление аккаунтом и бронированиями</p>
+        </div>
+    </section>
+
+    <div class="content-section">
+        <div class="container">
+            <!-- Auth required message -->
+            <div id="authRequired" class="text-center" style="display: none;">
+                <div class="card" style="max-width: 500px; margin: 0 auto; padding: 3rem;">
+                    <h2>Требуется авторизация</h2>
+                    <p style="margin: 1rem 0; color: #6b7280;">Для доступа к личному кабинету необходимо войти в аккаунт</p>
+                    <div style="display: flex; gap: 1rem; justify-content: center;">
+                        <a href="login.html" class="btn btn-primary">Войти</a>
+                        <a href="register.html" class="btn btn-outline">Регистрация</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Profile content -->
+            <div id="profileContent" style="display: none;">
+                <div style="display: grid; grid-template-columns: 1fr 400px; gap: 2rem; align-items: start;">
+                    
+                    <!-- Profile Form -->
+                    <div class="card" style="padding: 2rem;">
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <h2>Личная информация</h2>
+                            <button id="editBtn" class="btn btn-outline" onclick="toggleEdit()">
+                                ✏️ Редактировать
+                            </button>
+                        </div>
+                        
+                        <form id="profileForm">
+                            <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                                <div class="form-field">
+                                    <label for="firstName">Имя</label>
+                                    <input type="text" id="firstName" name="firstName" class="form-input" readonly>
+                                </div>
+
+                                <div class="form-field">
+                                    <label for="lastName">Фамилия</label>
+                                    <input type="text" id="lastName" name="lastName" class="form-input" readonly>
+                                </div>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="middleName">Отчество</label>
+                                <input type="text" id="middleName" name="middleName" class="form-input" readonly>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="phone">📱 Номер телефона</label>
+                                <input type="tel" id="phone" name="phone" class="form-input" readonly>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="passport">🆔 Паспорт</label>
+                                <input type="text" id="passport" name="passport" class="form-input" readonly>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="birthDate">📅 Дата рождения</label>
+                                <input type="date" id="birthDate" name="birthDate" class="form-input" readonly>
+                            </div>
+
+                            <div id="editActions" style="display: none; margin-top: 2rem;">
+                                <div style="display: flex; gap: 1rem;">
+                                    <button type="submit" class="btn btn-primary" id="saveBtn">
+                                        💾 Сохранить
+                                    </button>
+                                    <button type="button" class="btn btn-outline" onclick="cancelEdit()">
+                                        ❌ Отмена
+                                    </button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Profile Stats -->
+                    <div>
+                        <!-- User Stats -->
+                        <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+                            <h3 style="margin-bottom: 1.5rem;">Статистика</h3>
+                            
+                            <div style="display: grid; gap: 1rem;">
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>Всего бронирований:</span>
+                                    <strong id="totalBookings">0</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>Активных бронирований:</span>
+                                    <strong id="activeBookings" style="color: #10b981;">0</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>Потрачено всего:</span>
+                                    <strong id="totalSpent" style="color: #3b82f6;">0 ₽</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; align-items: center;">
+                                    <span>Статус клиента:</span>
+                                    <strong id="clientStatus" style="color: #f59e0b;">Новый</strong>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Quick Actions -->
+                        <div class="card" style="padding: 2rem;">
+                            <h3 style="margin-bottom: 1.5rem;">Быстрые действия</h3>
+                            
+                            <div style="display: grid; gap: 1rem;">
+                                <a href="cars.html" class="btn btn-primary" style="text-decoration: none;">
+                                    🚗 Забронировать автомобиль
+                                </a>
+                                <a href="history.html" class="btn btn-outline" style="text-decoration: none;">
+                                    📋 История бронирований
+                                </a>
+                                <a href="cards.html" class="btn btn-outline" style="text-decoration: none;">
+                                    💳 Банковские карты
+                                </a>
+                                <a href="branches.html" class="btn btn-outline" style="text-decoration: none;">
+                                    🏢 Найти филиал
+                                </a>
+                            </div>
+                        </div>
+
+                        <!-- Logout -->
+                        <div class="card" style="padding: 2rem; margin-top: 2rem;">
+                            <button onclick="logout()" class="btn" style="width: 100%; background: #ef4444; color: white;">
+                                🚪 Выйти из аккаунта
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Recent Bookings -->
+                <div class="card" style="padding: 2rem; margin-top: 2rem;">
+                    <h3 style="margin-bottom: 1.5rem;">Последние бронирования</h3>
+                    
+                    <div id="recentBookings">
+                        <p style="color: #6b7280; text-align: center; padding: 2rem;">
+                            У вас пока нет бронирований
+                        </p>
+                    </div>
+                    
+                    <div class="text-center" style="margin-top: 1.5rem;">
+                        <a href="history.html" class="btn btn-outline">
+                            Показать все бронирования →
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Контакты</h3>
+                    <p>Телефон: 8 (800) 555-35-35</p>
+                    <p>Звонок бесплатный</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Навигация</h3>
+                    <a href="index.html">Главная</a>
+                    <a href="branches.html">Филиалы</a>
+                    <a href="cars.html">Автомобили</a>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>О компании</h3>
+                    <p>Надежный сервис аренды автомобилей. На любой случай, любой автомобиль.</p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 AutoRent. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let currentUser = null;
+        let originalUserData = null;
+        let isEditing = false;
+
+        // Initialize page
+        function init() {
+            const userData = localStorage.getItem('currentUser');
+            if (userData) {
+                currentUser = JSON.parse(userData);
+                originalUserData = {...currentUser};
+                
+                document.getElementById('userMenu').innerHTML = `
+                    <a href="profile.html" class="nav-item active">👤 ${currentUser.firstName}</a>
+                    <a href="#" onclick="logout()" class="btn btn-outline">Выйти</a>
+                `;
+                
+                populateProfile();
+                loadBookingStats();
+                loadRecentBookings();
+                document.getElementById('profileContent').style.display = 'block';
+            } else {
+                document.getElementById('userMenu').innerHTML = `
+                    <a href="login.html" class="btn btn-outline">Войти</a>
+                    <a href="register.html" class="btn btn-primary">Регистрация</a>
+                `;
+                document.getElementById('authRequired').style.display = 'block';
+            }
+        }
+
+        function populateProfile() {
+            document.getElementById('firstName').value = currentUser.firstName || '';
+            document.getElementById('lastName').value = currentUser.lastName || '';
+            document.getElementById('middleName').value = currentUser.middleName || '';
+            document.getElementById('phone').value = currentUser.phone || '';
+            document.getElementById('passport').value = currentUser.passport || '';
+            document.getElementById('birthDate').value = currentUser.birthDate || '';
+        }
+
+        function toggleEdit() {
+            isEditing = !isEditing;
+            const inputs = document.querySelectorAll('#profileForm input');
+            const editBtn = document.getElementById('editBtn');
+            const editActions = document.getElementById('editActions');
+            
+            if (isEditing) {
+                inputs.forEach(input => input.readOnly = false);
+                editBtn.style.display = 'none';
+                editActions.style.display = 'block';
+            } else {
+                inputs.forEach(input => input.readOnly = true);
+                editBtn.style.display = 'block';
+                editActions.style.display = 'none';
+            }
+        }
+
+        function cancelEdit() {
+            currentUser = {...originalUserData};
+            populateProfile();
+            toggleEdit();
+        }
+
+        function loadBookingStats() {
+            const bookings = JSON.parse(localStorage.getItem('userBookings') || '[]');
+            const userBookings = bookings.filter(b => b.user.id === currentUser.id);
+            
+            const totalBookings = userBookings.length;
+            const activeBookings = userBookings.filter(b => {
+                const endDate = new Date(b.endDate);
+                return endDate >= new Date() && b.status === 'confirmed';
+            }).length;
+            
+            const totalSpent = userBookings.reduce((sum, booking) => {
+                const cost = parseInt(booking.totalCost.replace(/[^\d]/g, ''));
+                return sum + cost;
+            }, 0);
+            
+            let clientStatus = 'Новый';
+            if (totalBookings >= 10) clientStatus = 'VIP';
+            else if (totalBookings >= 5) clientStatus = 'Постоянный';
+            else if (totalBookings >= 1) clientStatus = 'Активный';
+            
+            document.getElementById('totalBookings').textContent = totalBookings;
+            document.getElementById('activeBookings').textContent = activeBookings;
+            document.getElementById('totalSpent').textContent = totalSpent.toLocaleString() + ' ₽';
+            document.getElementById('clientStatus').textContent = clientStatus;
+        }
+
+        function loadRecentBookings() {
+            const bookings = JSON.parse(localStorage.getItem('userBookings') || '[]');
+            const userBookings = bookings
+                .filter(b => b.user.id === currentUser.id)
+                .sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt))
+                .slice(0, 3);
+            
+            const container = document.getElementById('recentBookings');
+            
+            if (userBookings.length === 0) {
+                container.innerHTML = `
+                    <p style="color: #6b7280; text-align: center; padding: 2rem;">
+                        У вас пока нет бронирований
+                    </p>
+                `;
+                return;
+            }
+            
+            container.innerHTML = userBookings.map(booking => {
+                const startDate = new Date(booking.startDate).toLocaleDateString('ru-RU');
+                const endDate = new Date(booking.endDate).toLocaleDateString('ru-RU');
+                const statusColor = booking.status === 'confirmed' ? '#10b981' : '#6b7280';
+                const statusText = booking.status === 'confirmed' ? 'Подтверждено' : 'Завершено';
+                
+                return `
+                    <div class="card" style="padding: 1rem; margin-bottom: 1rem; background: #f8fafc;">
+                        <div style="display: flex; justify-content: space-between; align-items: center;">
+                            <div>
+                                <h4 style="margin: 0 0 0.5rem 0;">${booking.car.name}</h4>
+                                <p style="margin: 0; color: #6b7280; font-size: 0.9rem;">
+                                    ${startDate} - ${endDate}
+                                </p>
+                            </div>
+                            <div style="text-align: right;">
+                                <div style="color: ${statusColor}; font-weight: 600; font-size: 0.9rem;">
+                                    ${statusText}
+                                </div>
+                                <div style="font-weight: 600; color: #3b82f6;">
+                                    ${booking.totalCost}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function logout() {
+            if (confirm('Вы уверены, что хотите выйти из аккаунта?')) {
+                localStorage.removeItem('currentUser');
+                window.location.href = 'index.html';
+            }
+        }
+
+        // Handle profile form submission
+        document.getElementById('profileForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Validate data
+            if (!data.firstName.trim() || !data.lastName.trim()) {
+                alert('Имя и фамилия обязательны для заполнения');
+                return;
+            }
+            
+            // Update user data
+            currentUser = {
+                ...currentUser,
+                firstName: data.firstName,
+                lastName: data.lastName,
+                middleName: data.middleName,
+                phone: data.phone,
+                passport: data.passport,
+                birthDate: data.birthDate
+            };
+            
+            // Save to localStorage
+            localStorage.setItem('currentUser', JSON.stringify(currentUser));
+            originalUserData = {...currentUser};
+            
+            // Update UI
+            document.getElementById('userMenu').innerHTML = `
+                <a href="profile.html" class="nav-item active">👤 ${currentUser.firstName}</a>
+                <a href="#" onclick="logout()" class="btn btn-outline">Выйти</a>
+            `;
+            
+            toggleEdit();
+            alert('Данные успешно обновлены!');
+        });
+
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            const navMenu = document.querySelector('.nav-menu');
+            navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // Initialize page
+        init();
+    </script>
+</body>
+</html>

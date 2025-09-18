@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Филиалы - AutoRent</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">🚗</div>
+                    <div>
+                        <h1>AutoRent</h1>
+                        <p>На любой случай</p>
+                    </div>
+                </a>
+
+                <div class="nav-menu">
+                    <a href="index.html" class="nav-item">Главная</a>
+                    <a href="branches.html" class="nav-item active">Филиалы</a>
+                    <a href="booking.html" class="nav-item">Бронирование</a>
+                    <a href="cars.html" class="nav-item">Автомобили</a>
+                </div>
+
+                <div class="user-menu" id="userMenu">
+                    <a href="login.html" class="btn btn-outline">Войти</a>
+                    <a href="register.html" class="btn btn-primary">Регистрация</a>
+                </div>
+
+                <button class="mobile-menu-btn">☰</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Наши филиалы</h1>
+            <p class="page-subtitle">Удобные локации по всей Москве</p>
+        </div>
+    </section>
+
+    <!-- Map Section -->
+    <section class="content-section" style="background: white;">
+        <div class="container">
+            <div class="card" style="padding: 2rem;">
+                <h2 style="text-align: center; margin-bottom: 2rem;">Интерактивная карта</h2>
+                
+                <!-- Map placeholder -->
+                <div style="background: linear-gradient(135deg, #e0f2fe 0%, #b3e5fc 100%); height: 400px; border-radius: 12px; display: flex; align-items: center; justify-content: center; position: relative; overflow: hidden;">
+                    <!-- Map markers -->
+                    <div style="position: absolute; top: 20%; left: 30%; background: #ef4444; color: white; padding: 8px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                        📍 Центральный офис
+                    </div>
+                    <div style="position: absolute; top: 60%; right: 20%; background: #10b981; color: white; padding: 8px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                        ✈️ Аэропорт
+                    </div>
+                    <div style="position: absolute; bottom: 25%; left: 25%; background: #3b82f6; color: white; padding: 8px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                        🚇 Метро
+                    </div>
+                    <div style="position: absolute; top: 40%; right: 35%; background: #f59e0b; color: white; padding: 8px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                        🏢 ТЦ Европейский
+                    </div>
+                    <div style="position: absolute; bottom: 40%; right: 15%; background: #8b5cf6; color: white; padding: 8px 12px; border-radius: 20px; font-size: 0.9rem; font-weight: 600; box-shadow: 0 4px 12px rgba(0,0,0,0.2);">
+                        🏢 Бизнес-центр
+                    </div>
+                    
+                    <!-- Map center info -->
+                    <div style="text-align: center; color: #0369a1;">
+                        <h3 style="margin-bottom: 0.5rem;">🗺️ Карта филиалов AutoRent</h3>
+                        <p>Кликните на маркер для подробной информации</p>
+                    </div>
+                </div>
+                
+                <p style="text-align: center; color: #6b7280; margin-top: 1rem;">
+                    💡 Нажмите на филиал ниже, чтобы увидеть его расположение на карте
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Branches List -->
+    <section class="content-section">
+        <div class="container">
+            <div class="grid-3" id="branchesList">
+                <!-- Branches will be populated by JavaScript -->
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Контакты</h3>
+                    <p>Телефон: 8 (800) 555-35-35</p>
+                    <p>Звонок бесплатный</p>
+                    <p>Email: info@autorent.ru</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Навигация</h3>
+                    <a href="index.html">Главная</a>
+                    <a href="branches.html">Филиалы</a>
+                    <a href="booking.html">Бронирование</a>
+                    <a href="cars.html">Автомобили</a>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>О компании</h3>
+                    <p>Надежный сервис аренды автомобилей. На любой случай, любой автомобиль.</p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 AutoRent. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Branches data
+        const branches = [
+            {
+                id: 'center',
+                name: 'Центральный офис',
+                address: 'ул. Тверская, 10',
+                metro: 'м. Тверская, Охотный Ряд',
+                phone: '+7 (495) 123-45-67',
+                hours: 'Пн-Вс: 08:00 - 22:00',
+                features: ['Премиум автомобили', 'VIP-зал ожидания', 'Консьерж-сервис', 'Парковка'],
+                icon: '🏢',
+                color: '#ef4444',
+                image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxvZmZpY2UlMjBidWlsZGluZ3xlbnwxfHx8fDE3NTc3NjE4ODR8MA&ixlib=rb-4.1.0&q=80&w=400'
+            },
+            {
+                id: 'airport',
+                name: 'Аэропорт Домодедово',
+                address: 'Терминал А, зона прилета',
+                metro: 'Экспресс от м. Павелецкая',
+                phone: '+7 (495) 234-56-78',
+                hours: 'Круглосуточно',
+                features: ['Встреча в аэропорту', 'Трансфер к автомобилю', 'Экспресс-оформление', 'Duty Free скидки'],
+                icon: '✈️',
+                color: '#10b981',
+                image: 'https://images.unsplash.com/photo-1436491865332-7a61a109cc05?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhaXJwb3J0JTIwdGVybWluYWx8ZW58MXx8fHwxNzU3NzYxODg0fDA&ixlib=rb-4.1.0&q=80&w=400'
+            },
+            {
+                id: 'metro',
+                name: 'У метро Парк Культуры',
+                address: 'ул. Соколова, 5',
+                metro: 'м. Парк Культуры (5 мин пешком)',
+                phone: '+7 (495) 345-67-89',
+                hours: 'Пн-Вс: 09:00 - 21:00',
+                features: ['Удобная локация', 'Быстрое оформление', 'Кофе-зона', 'Wi-Fi'],
+                icon: '🚇',
+                color: '#3b82f6',
+                image: 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZXRybyUyMHN0YXRpb258ZW58MXx8fHwxNzU3NzYxODg0fDA&ixlib=rb-4.1.0&q=80&w=400'
+            },
+            {
+                id: 'mall',
+                name: 'ТЦ Европейский',
+                address: 'Площадь Киевского Вокзала, 2',
+                metro: 'м. Киевская (в ТЦ)',
+                phone: '+7 (495) 456-78-90',
+                hours: 'Пн-Вс: 10:00 - 22:00',
+                features: ['В торговом центре', 'Детская зона', 'Магазины рядом', 'Кафе и рестораны'],
+                icon: '🛍️',
+                color: '#f59e0b',
+                image: 'https://images.unsplash.com/photo-1519567241046-7f570eee3ce6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxzaG9wcGluZyUyMG1hbGx8ZW58MXx8fHwxNzU3NzYxODg0fDA&ixlib=rb-4.1.0&q=80&w=400'
+            },
+            {
+                id: 'business',
+                name: 'Бизнес-центр Белая Площадь',
+                address: 'ул. Бутырская, 76',
+                metro: 'м. Савеловская (10 мин пешком)',
+                phone: '+7 (495) 567-89-01',
+                hours: 'Пн-Пт: 08:00 - 20:00, Сб-Вс: 10:00 - 18:00',
+                features: ['Деловой район', 'Переговорные комнаты', 'Бизнес-ланч', 'Охраняемая парковка'],
+                icon: '🏢',
+                color: '#8b5cf6',
+                image: 'https://images.unsplash.com/photo-1486406146926-c627a92ad1ab?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxidXNpbmVzcyUyMGNlbnRlcnxlbnwxfHx8fDE3NTc3NjE4ODR8MA&ixlib=rb-4.1.0&q=80&w=400'
+            }
+        ];
+
+        // Check if user is logged in
+        function checkAuth() {
+            const userData = localStorage.getItem('currentUser');
+            if (userData) {
+                const currentUser = JSON.parse(userData);
+                document.getElementById('userMenu').innerHTML = `
+                    <a href="profile.html" class="nav-item">👤 ${currentUser.firstName}</a>
+                    <a href="#" onclick="logout()" class="btn btn-outline">Выйти</a>
+                `;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.reload();
+        }
+
+        // Render branches
+        function renderBranches() {
+            const container = document.getElementById('branchesList');
+            
+            container.innerHTML = branches.map(branch => `
+                <div class="card" style="overflow: hidden;">
+                    <img src="${branch.image}" alt="${branch.name}" 
+                         style="width: 100%; height: 200px; object-fit: cover;">
+                    
+                    <div style="padding: 2rem;">
+                        <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                            <div style="font-size: 2rem;">${branch.icon}</div>
+                            <h3 style="margin: 0; color: #1f2937;">${branch.name}</h3>
+                        </div>
+                        
+                        <div style="space-y: 0.5rem; color: #6b7280; font-size: 0.9rem; margin-bottom: 1.5rem;">
+                            <p style="margin: 0.5rem 0;">📍 ${branch.address}</p>
+                            <p style="margin: 0.5rem 0;">🚇 ${branch.metro}</p>
+                            <p style="margin: 0.5rem 0;">📞 ${branch.phone}</p>
+                            <p style="margin: 0.5rem 0;">🕒 ${branch.hours}</p>
+                        </div>
+                        
+                        <div style="margin-bottom: 1.5rem;">
+                            <h4 style="margin: 0 0 0.5rem 0; color: #374151;">Особенности:</h4>
+                            <div style="display: flex; flex-wrap: wrap; gap: 0.5rem;">
+                                ${branch.features.map(feature => 
+                                    `<span class="car-feature">${feature}</span>`
+                                ).join('')}
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 0.5rem;">
+                            <button onclick="showOnMap('${branch.id}')" 
+                                    class="btn btn-outline" style="flex: 1; font-size: 0.9rem;">
+                                🗺️ На карте
+                            </button>
+                            <button onclick="selectBranch('${branch.id}')" 
+                                    class="btn btn-primary" style="flex: 1; font-size: 0.9rem;">
+                                Выбрать
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Show branch on map
+        function showOnMap(branchId) {
+            const branch = branches.find(b => b.id === branchId);
+            if (branch) {
+                // Scroll to map
+                document.querySelector('.content-section').scrollIntoView({ 
+                    behavior: 'smooth' 
+                });
+                
+                // Highlight the branch (simple simulation)
+                alert(`📍 ${branch.name}\n${branch.address}\n\nВ реальном приложении здесь будет интерактивная карта с выделенным филиалом.`);
+            }
+        }
+
+        // Select branch for booking
+        function selectBranch(branchId) {
+            const branch = branches.find(b => b.id === branchId);
+            if (branch) {
+                localStorage.setItem('selectedBranch', JSON.stringify(branch));
+                
+                // Check if user is logged in
+                const userData = localStorage.getItem('currentUser');
+                if (userData) {
+                    window.location.href = 'booking.html';
+                } else {
+                    if (confirm('Для бронирования необходимо войти в аккаунт. Перейти к авторизации?')) {
+                        window.location.href = 'login.html';
+                    }
+                }
+            }
+        }
+
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            const navMenu = document.querySelector('.nav-menu');
+            navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // Initialize page
+        checkAuth();
+        renderBranches();
+    </script>
+</body>
+</html>

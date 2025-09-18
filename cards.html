@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Банковские карты - AutoRent</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">🚗</div>
+                    <div>
+                        <h1>AutoRent</h1>
+                        <p>На любой случай</p>
+                    </div>
+                </a>
+
+                <div class="nav-menu">
+                    <a href="index.html" class="nav-item">Главная</a>
+                    <a href="branches.html" class="nav-item">Филиалы</a>
+                    <a href="booking.html" class="nav-item">Бронирование</a>
+                    <a href="cars.html" class="nav-item">Автомобили</a>
+                </div>
+
+                <div class="user-menu" id="userMenu">
+                    <!-- Will be populated by JS -->
+                </div>
+
+                <button class="mobile-menu-btn">☰</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Банковские карты</h1>
+            <p class="page-subtitle">Управление способами оплаты</p>
+        </div>
+    </section>
+
+    <div class="content-section">
+        <div class="container">
+            <!-- Auth required message -->
+            <div id="authRequired" class="text-center" style="display: none;">
+                <div class="card" style="max-width: 500px; margin: 0 auto; padding: 3rem;">
+                    <h2>Требуется авторизация</h2>
+                    <p style="margin: 1rem 0; color: #6b7280;">Для управления картами необходимо войти в аккаунт</p>
+                    <div style="display: flex; gap: 1rem; justify-content: center;">
+                        <a href="login.html" class="btn btn-primary">Войти</a>
+                        <a href="register.html" class="btn btn-outline">Регистрация</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Cards content -->
+            <div id="cardsContent" style="display: none;">
+                <div style="display: grid; grid-template-columns: 1fr 400px; gap: 2rem; align-items: start;">
+                    
+                    <!-- Cards List -->
+                    <div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+                            <h2>Ваши карты</h2>
+                            <button onclick="showAddCardForm()" class="btn btn-primary">
+                                ➕ Добавить карту
+                            </button>
+                        </div>
+                        
+                        <div id="cardsList">
+                            <!-- Cards will be populated by JS -->
+                        </div>
+
+                        <div id="noCardsMessage" class="text-center" style="display: none;">
+                            <div class="card" style="padding: 3rem;">
+                                <h3>У вас пока нет сохраненных карт</h3>
+                                <p style="color: #6b7280; margin: 1rem 0;">Добавьте карту для быстрой оплаты бронирований</p>
+                                <button onclick="showAddCardForm()" class="btn btn-primary">
+                                    💳 Добавить первую карту
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Add Card Form -->
+                    <div class="card" id="addCardForm" style="padding: 2rem; display: none;">
+                        <h3 style="margin-bottom: 2rem;">Добавить новую карту</h3>
+                        
+                        <form id="cardForm">
+                            <div class="form-field">
+                                <label for="cardNumber">💳 Номер карты</label>
+                                <input type="text" id="cardNumber" name="cardNumber" 
+                                       placeholder="1234 5678 9012 3456" 
+                                       maxlength="19" required>
+                                <div class="error-message" id="cardNumberError"></div>
+                                <div id="cardTypeDisplay" style="margin-top: 0.5rem; font-size: 0.9rem; color: #6b7280;"></div>
+                            </div>
+
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-field">
+                                    <label for="expiryDate">📅 Срок действия</label>
+                                    <input type="text" id="expiryDate" name="expiryDate" 
+                                           placeholder="MM/YY" maxlength="5" required>
+                                    <div class="error-message" id="expiryError"></div>
+                                </div>
+
+                                <div class="form-field">
+                                    <label for="cvv">🔒 CVV</label>
+                                    <input type="text" id="cvv" name="cvv" 
+                                           placeholder="123" maxlength="4" required>
+                                    <div class="error-message" id="cvvError"></div>
+                                </div>
+                            </div>
+
+                            <div class="form-field">
+                                <label for="cardName">📝 Имя держателя</label>
+                                <input type="text" id="cardName" name="cardName" 
+                                       placeholder="IVAN PETROV" required>
+                                <div class="error-message" id="cardNameError"></div>
+                            </div>
+
+                            <div class="form-field">
+                                <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                    <input type="checkbox" id="saveCard" name="saveCard" checked>
+                                    <span>Сохранить карту для будущих платежей</span>
+                                </label>
+                            </div>
+
+                            <div style="display: flex; gap: 1rem; margin-top: 2rem;">
+                                <button type="submit" class="btn btn-primary" style="flex: 1;" id="addCardBtn">
+                                    💾 Добавить карту
+                                </button>
+                                <button type="button" onclick="hideAddCardForm()" class="btn btn-outline" style="flex: 1;">
+                                    ❌ Отмена
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Card Tips (shown when form is hidden) -->
+                    <div class="card" id="cardTips" style="padding: 2rem;">
+                        <h3 style="margin-bottom: 1.5rem;">💡 Полезная информация</h3>
+                        
+                        <div style="space-y: 1rem;">
+                            <div style="background: #f0f9ff; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                                <h4 style="color: #0369a1; margin: 0 0 0.5rem 0;">🔒 Безопасность</h4>
+                                <p style="color: #0c4a6e; margin: 0; font-size: 0.9rem;">
+                                    Все данные карт шифруются и хранятся в соответствии с PCI DSS
+                                </p>
+                            </div>
+                            
+                            <div style="background: #f0fdf4; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                                <h4 style="color: #059669; margin: 0 0 0.5rem 0;">⚡ Быстрая оплата</h4>
+                                <p style="color: #065f46; margin: 0; font-size: 0.9rem;">
+                                    Сохраненные карты позволяют оплачивать бронирования в один клик
+                                </p>
+                            </div>
+                            
+                            <div style="background: #fefce8; padding: 1rem; border-radius: 8px; margin-bottom: 1rem;">
+                                <h4 style="color: #ca8a04; margin: 0 0 0.5rem 0;">💳 Поддерживаемые карты</h4>
+                                <p style="color: #92400e; margin: 0; font-size: 0.9rem;">
+                                    Visa, MasterCard, МИР, American Express
+                                </p>
+                            </div>
+                        </div>
+
+                        <div style="margin-top: 2rem;">
+                            <h4 style="margin-bottom: 1rem;">Статистика платежей</h4>
+                            <div id="paymentStats">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <span>Всего платежей:</span>
+                                    <strong id="totalPayments">0</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <span>Общая сумма:</span>
+                                    <strong id="totalAmount" style="color: #3b82f6;">0 ₽</strong>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <span>Средний чек:</span>
+                                    <strong id="averageAmount">0 ₽</strong>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Контакты</h3>
+                    <p>Телефон: 8 (800) 555-35-35</p>
+                    <p>Звонок бесплатный</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Навигация</h3>
+                    <a href="index.html">Главная</a>
+                    <a href="branches.html">Филиалы</a>
+                    <a href="cars.html">Автомобили</a>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>О компании</h3>
+                    <p>Надежный сервис аренды автомобилей. На любой случай, любой автомобиль.</p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 AutoRent. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let currentUser = null;
+        let userCards = [];
+
+        // Initialize page
+        function init() {
+            const userData = localStorage.getItem('currentUser');
+            if (userData) {
+                currentUser = JSON.parse(userData);
+                
+                document.getElementById('userMenu').innerHTML = `
+                    <a href="profile.html" class="nav-item">👤 ${currentUser.firstName}</a>
+                    <a href="history.html" class="nav-item">📋 История</a>
+                    <a href="cards.html" class="nav-item active">💳 Карты</a>
+                    <a href="#" onclick="logout()" class="btn btn-outline">Выйти</a>
+                `;
+                
+                loadCards();
+                loadPaymentStats();
+                document.getElementById('cardsContent').style.display = 'block';
+            } else {
+                document.getElementById('userMenu').innerHTML = `
+                    <a href="login.html" class="btn btn-outline">Войти</a>
+                    <a href="register.html" class="btn btn-primary">Регистрация</a>
+                `;
+                document.getElementById('authRequired').style.display = 'block';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        // Load user cards
+        function loadCards() {
+            const cards = JSON.parse(localStorage.getItem('userCards') || '[]');
+            userCards = cards.filter(card => card.userId === currentUser.id);
+            renderCards();
+        }
+
+        // Render cards
+        function renderCards() {
+            const container = document.getElementById('cardsList');
+            const noMessage = document.getElementById('noCardsMessage');
+            
+            if (userCards.length === 0) {
+                container.style.display = 'none';
+                noMessage.style.display = 'block';
+                return;
+            }
+            
+            container.style.display = 'block';
+            noMessage.style.display = 'none';
+            
+            container.innerHTML = userCards.map(card => {
+                const cardTypeConfig = {
+                    visa: { icon: '💳', color: '#1a365d', name: 'Visa' },
+                    mastercard: { icon: '💳', color: '#e53e3e', name: 'MasterCard' },
+                    mir: { icon: '💳', color: '#10b981', name: 'МИР' },
+                    amex: { icon: '💳', color: '#3182ce', name: 'American Express' },
+                    unknown: { icon: '💳', color: '#6b7280', name: 'Неизвестная карта' }
+                };
+                
+                const config = cardTypeConfig[card.type] || cardTypeConfig.unknown;
+                
+                return `
+                    <div class="card" style="padding: 1.5rem; margin-bottom: 1rem; background: linear-gradient(135deg, ${config.color} 0%, ${config.color}dd 100%); color: white; position: relative; overflow: hidden;">
+                        <!-- Card background pattern -->
+                        <div style="position: absolute; top: -50px; right: -50px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%; opacity: 0.3;"></div>
+                        <div style="position: absolute; bottom: -30px; left: -30px; width: 100px; height: 100px; background: rgba(255,255,255,0.1); border-radius: 50%; opacity: 0.3;"></div>
+                        
+                        <div style="position: relative; z-index: 1;">
+                            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 1rem;">
+                                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                                    <span style="font-size: 1.5rem;">${config.icon}</span>
+                                    <span style="font-weight: 600;">${config.name}</span>
+                                </div>
+                                <button onclick="deleteCard('${card.id}')" 
+                                        style="background: rgba(255,255,255,0.2); border: none; color: white; padding: 0.5rem; border-radius: 50%; cursor: pointer; font-size: 1.2rem;"
+                                        title="Удалить карту">
+                                    🗑️
+                                </button>
+                            </div>
+                            
+                            <div style="font-family: 'Courier New', monospace; font-size: 1.125rem; letter-spacing: 2px; margin-bottom: 1rem;">
+                                ${card.maskedNumber}
+                            </div>
+                            
+                            <div style="display: flex; justify-content: space-between; align-items: center;">
+                                <div>
+                                    <div style="font-size: 0.875rem; opacity: 0.8;">Владелец</div>
+                                    <div style="font-weight: 600;">${card.holderName}</div>
+                                </div>
+                                <div>
+                                    <div style="font-size: 0.875rem; opacity: 0.8;">Действует до</div>
+                                    <div style="font-weight: 600;">${card.expiryDate}</div>
+                                </div>
+                            </div>
+                            
+                            ${card.isDefault ? `
+                                <div style="margin-top: 1rem; padding: 0.5rem; background: rgba(255,255,255,0.2); border-radius: 6px; text-align: center; font-size: 0.875rem; font-weight: 600;">
+                                    ⭐ Карта по умолчанию
+                                </div>
+                            ` : `
+                                <button onclick="setDefaultCard('${card.id}')" 
+                                        style="margin-top: 1rem; width: 100%; padding: 0.5rem; background: rgba(255,255,255,0.2); border: none; color: white; border-radius: 6px; cursor: pointer; font-size: 0.875rem;">
+                                    Сделать основной
+                                </button>
+                            `}
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        // Card type detection
+        function detectCardType(number) {
+            const cleaned = number.replace(/\D/g, '');
+            
+            if (/^4/.test(cleaned)) return 'visa';
+            if (/^5[1-5]/.test(cleaned) || /^2[2-7]/.test(cleaned)) return 'mastercard';
+            if (/^2/.test(cleaned)) return 'mir';
+            if (/^3[47]/.test(cleaned)) return 'amex';
+            
+            return 'unknown';
+        }
+
+        // Format card number
+        function formatCardNumber(value) {
+            const cleaned = value.replace(/\D/g, '');
+            const chunks = cleaned.match(/.{1,4}/g) || [];
+            return chunks.join(' ').substr(0, 19);
+        }
+
+        // Format expiry date
+        function formatExpiryDate(value) {
+            const cleaned = value.replace(/\D/g, '');
+            if (cleaned.length >= 2) {
+                return cleaned.substr(0, 2) + '/' + cleaned.substr(2, 2);
+            }
+            return cleaned;
+        }
+
+        // Show/hide add card form
+        function showAddCardForm() {
+            document.getElementById('addCardForm').style.display = 'block';
+            document.getElementById('cardTips').style.display = 'none';
+        }
+
+        function hideAddCardForm() {
+            document.getElementById('addCardForm').style.display = 'none';
+            document.getElementById('cardTips').style.display = 'block';
+            document.getElementById('cardForm').reset();
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+        }
+
+        // Set default card
+        function setDefaultCard(cardId) {
+            userCards = userCards.map(card => ({
+                ...card,
+                isDefault: card.id === cardId
+            }));
+            
+            // Save to localStorage
+            const allCards = JSON.parse(localStorage.getItem('userCards') || '[]');
+            const updatedCards = allCards.map(card => {
+                if (card.userId === currentUser.id) {
+                    return userCards.find(uc => uc.id === card.id) || card;
+                }
+                return card;
+            });
+            
+            localStorage.setItem('userCards', JSON.stringify(updatedCards));
+            renderCards();
+        }
+
+        // Delete card
+        function deleteCard(cardId) {
+            if (!confirm('Вы уверены, что хотите удалить эту карту?')) {
+                return;
+            }
+            
+            userCards = userCards.filter(card => card.id !== cardId);
+            
+            // Save to localStorage
+            const allCards = JSON.parse(localStorage.getItem('userCards') || '[]');
+            const updatedCards = allCards.filter(card => 
+                !(card.userId === currentUser.id && card.id === cardId)
+            );
+            
+            localStorage.setItem('userCards', JSON.stringify(updatedCards));
+            renderCards();
+        }
+
+        // Load payment statistics
+        function loadPaymentStats() {
+            const bookings = JSON.parse(localStorage.getItem('userBookings') || '[]');
+            const userBookings = bookings.filter(b => b.user.id === currentUser.id);
+            
+            const totalPayments = userBookings.length;
+            const totalAmount = userBookings.reduce((sum, booking) => {
+                const cost = parseInt(booking.totalCost.replace(/[^\d]/g, ''));
+                return sum + cost;
+            }, 0);
+            const averageAmount = totalPayments > 0 ? Math.round(totalAmount / totalPayments) : 0;
+            
+            document.getElementById('totalPayments').textContent = totalPayments;
+            document.getElementById('totalAmount').textContent = totalAmount.toLocaleString() + ' ₽';
+            document.getElementById('averageAmount').textContent = averageAmount.toLocaleString() + ' ₽';
+        }
+
+        // Form event listeners
+        document.getElementById('cardNumber').addEventListener('input', function(e) {
+            e.target.value = formatCardNumber(e.target.value);
+            
+            const cardType = detectCardType(e.target.value);
+            const cardTypeNames = {
+                visa: 'Visa',
+                mastercard: 'MasterCard',
+                mir: 'МИР',
+                amex: 'American Express',
+                unknown: 'Неизвестная карта'
+            };
+            
+            document.getElementById('cardTypeDisplay').textContent = 
+                cardType !== 'unknown' ? `Тип карты: ${cardTypeNames[cardType]}` : '';
+        });
+
+        document.getElementById('expiryDate').addEventListener('input', function(e) {
+            e.target.value = formatExpiryDate(e.target.value);
+        });
+
+        document.getElementById('cvv').addEventListener('input', function(e) {
+            e.target.value = e.target.value.replace(/\D/g, '');
+        });
+
+        // Form submission
+        document.getElementById('cardForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            const addCardBtn = document.getElementById('addCardBtn');
+            
+            // Clear previous errors
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+            
+            let isValid = true;
+            
+            // Validate card number
+            const cardNumber = data.cardNumber.replace(/\D/g, '');
+            if (!cardNumber || cardNumber.length < 13 || cardNumber.length > 19) {
+                document.getElementById('cardNumberError').textContent = 'Неверный номер карты';
+                isValid = false;
+            }
+            
+            // Validate expiry date
+            const expiryMatch = data.expiryDate.match(/^(\d{2})\/(\d{2})$/);
+            if (!expiryMatch) {
+                document.getElementById('expiryError').textContent = 'Неверный формат даты';
+                isValid = false;
+            } else {
+                const month = parseInt(expiryMatch[1]);
+                const year = parseInt(expiryMatch[2]) + 2000;
+                const now = new Date();
+                const expiry = new Date(year, month - 1);
+                
+                if (month < 1 || month > 12 || expiry <= now) {
+                    document.getElementById('expiryError').textContent = 'Карта просрочена или неверная дата';
+                    isValid = false;
+                }
+            }
+            
+            // Validate CVV
+            if (!data.cvv || data.cvv.length < 3 || data.cvv.length > 4) {
+                document.getElementById('cvvError').textContent = 'Неверный CVV код';
+                isValid = false;
+            }
+            
+            // Validate cardholder name
+            if (!data.cardName.trim()) {
+                document.getElementById('cardNameError').textContent = 'Введите имя держателя карты';
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Show loading
+                addCardBtn.innerHTML = '⏳ Добавление...';
+                addCardBtn.disabled = true;
+                
+                // Simulate card addition
+                setTimeout(() => {
+                    const newCard = {
+                        id: Date.now().toString(),
+                        userId: currentUser.id,
+                        maskedNumber: data.cardNumber.slice(0, -4).replace(/\d/g, '*') + data.cardNumber.slice(-4),
+                        type: detectCardType(data.cardNumber),
+                        expiryDate: data.expiryDate,
+                        holderName: data.cardName.toUpperCase(),
+                        isDefault: userCards.length === 0,
+                        addedAt: new Date().toISOString()
+                    };
+                    
+                    // Save card
+                    const allCards = JSON.parse(localStorage.getItem('userCards') || '[]');
+                    allCards.push(newCard);
+                    localStorage.setItem('userCards', JSON.stringify(allCards));
+                    
+                    // Reload cards
+                    loadCards();
+                    hideAddCardForm();
+                    
+                    addCardBtn.innerHTML = '💾 Добавить карту';
+                    addCardBtn.disabled = false;
+                    
+                    alert('Карта успешно добавлена!');
+                }, 1500);
+            }
+        });
+
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            const navMenu = document.querySelector('.nav-menu');
+            navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // Initialize page
+        init();
+    </script>
+</body>
+</html>

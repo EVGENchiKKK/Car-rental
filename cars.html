@@ -1,0 +1,401 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Выбор автомобилей - AutoRent</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">🚗</div>
+                    <div>
+                        <h1>AutoRent</h1>
+                        <p>На любой случай</p>
+                    </div>
+                </a>
+
+                <div class="nav-menu">
+                    <a href="index.html" class="nav-item">Главная</a>
+                    <a href="branches.html" class="nav-item">Филиалы</a>
+                    <a href="booking.html" class="nav-item">Бронирование</a>
+                    <a href="cars.html" class="nav-item active">Автомобили</a>
+                </div>
+
+                <div class="user-menu" id="userMenu">
+                    <a href="login.html" class="btn btn-outline">Войти</a>
+                    <a href="register.html" class="btn btn-primary">Регистрация</a>
+                </div>
+
+                <button class="mobile-menu-btn">☰</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Выбор автомобилей</h1>
+            <p class="page-subtitle">Найдите идеальный автомобиль для ваших нужд</p>
+        </div>
+    </section>
+
+    <!-- Filters -->
+    <section class="content-section" style="background: white;">
+        <div class="container">
+            <div class="search-form">
+                <h2 class="text-center">Фильтры поиска</h2>
+                
+                <div class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Класс</label>
+                        <select class="form-select" id="classFilter">
+                            <option value="">Все классы</option>
+                            <option value="economy">Эконом</option>
+                            <option value="premium">Премиум</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Марка</label>
+                        <select class="form-select" id="brandFilter">
+                            <option value="">Все марки</option>
+                            <option value="toyota">Toyota</option>
+                            <option value="bmw">BMW</option>
+                            <option value="mercedes">Mercedes-Benz</option>
+                            <option value="audi">Audi</option>
+                            <option value="volkswagen">Volkswagen</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Цена в день</label>
+                        <select class="form-select" id="priceFilter">
+                            <option value="">Любая цена</option>
+                            <option value="0-2000">До 2000 ₽</option>
+                            <option value="2000-4000">2000-4000 ₽</option>
+                            <option value="4000-6000">4000-6000 ₽</option>
+                            <option value="6000+">От 6000 ₽</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Тип кузова</label>
+                        <select class="form-select" id="bodyFilter">
+                            <option value="">Любой тип</option>
+                            <option value="sedan">Седан</option>
+                            <option value="hatchback">Хэтчбек</option>
+                            <option value="suv">Кроссовер</option>
+                            <option value="wagon">Универсал</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button class="btn btn-primary" onclick="applyFilters()">
+                        🔍 Применить фильтры
+                    </button>
+                    <button class="btn btn-outline" onclick="clearFilters()" style="margin-left: 1rem;">
+                        Очистить
+                    </button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Cars Grid -->
+    <section class="content-section">
+        <div class="container">
+            <div class="flex justify-between items-center" style="margin-bottom: 2rem;">
+                <h2>Доступные автомобили</h2>
+                <div>
+                    <select class="form-select" id="sortFilter" onchange="sortCars()">
+                        <option value="price-asc">Цена: по возрастанию</option>
+                        <option value="price-desc">Цена: по убыванию</option>
+                        <option value="name">По алфавиту</option>
+                        <option value="rating">По рейтингу</option>
+                    </select>
+                </div>
+            </div>
+
+            <div class="car-grid" id="carsGrid">
+                <!-- Cars will be populated by JavaScript -->
+            </div>
+
+            <div id="noCarsMessage" class="text-center" style="display: none; padding: 3rem; color: #6b7280;">
+                <h3>Автомобили не найдены</h3>
+                <p>Попробуйте изменить параметры поиска</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Контакты</h3>
+                    <p>Телефон: 8 (800) 555-35-35</p>
+                    <p>Звонок бесплатный</p>
+                    <p>Email: info@autorent.ru</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Навигация</h3>
+                    <a href="index.html">Главная</a>
+                    <a href="branches.html">Филиалы</a>
+                    <a href="booking.html">Бронирование</a>
+                    <a href="cars.html">Автомобили</a>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>О компании</h3>
+                    <p>Надежный сервис аренды автомобилей. На любой случай, любой автомобиль.</p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 AutoRent. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Car data
+        const cars = [
+            {
+                id: 1,
+                name: 'Toyota Camry',
+                class: 'premium',
+                brand: 'toyota',
+                body: 'sedan',
+                price: 3500,
+                features: ['Автомат', 'Кондиционер', 'Навигация'],
+                rating: 4.8,
+                image: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0b3lvdGElMjBjYW1yeXxlbnwxfHx8fDE3NTc3NjE4ODR8MA&ixlib=rb-4.1.0&q=80&w=400'
+            },
+            {
+                id: 2,
+                name: 'BMW 3 Series',
+                class: 'premium',
+                brand: 'bmw',
+                body: 'sedan',
+                price: 5500,
+                features: ['Автомат', 'Кожа', 'Спорт-режим'],
+                rating: 4.9,
+                image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxibXclMjAzJTIwc2VyaWVzfGVufDF8fHx8MTc1Nzc2MTg4NHww&ixlib=rb-4.1.0&q=80&w=400'
+            },
+            {
+                id: 3,
+                name: 'Volkswagen Polo',
+                class: 'economy',
+                brand: 'volkswagen',
+                body: 'hatchback',
+                price: 1800,
+                features: ['Механика', 'Кондиционер', 'USB'],
+                rating: 4.5,
+                image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2xrc3dhZ2VuJTIwcG9sb3xlbnwxfHx8fDE3NTc3NjE4ODR8MA&ixlib=rb-4.1.0&q=80&w=400'
+            },
+            {
+                id: 4,
+                name: 'Mercedes-Benz C-Class',
+                class: 'premium',
+                brand: 'mercedes',
+                body: 'sedan',
+                price: 6000,
+                features: ['Автомат', 'Премиум аудио', 'Панорама'],
+                rating: 4.9,
+                image: 'https://images.unsplash.com/photo-1618843479313-40f8afb4b4d8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtZXJjZWRlcyUyMGMlMjBjbGFzc3xlbnwxfHx8fDE3NTc3NjE4ODR8MA&ixlib=rb-4.1.0&q=80&w=400'
+            },
+            {
+                id: 5,
+                name: 'Audi Q5',
+                class: 'premium',
+                brand: 'audi',
+                body: 'suv',
+                price: 5000,
+                features: ['Полный привод', 'Автомат', 'Кожа'],
+                rating: 4.7,
+                image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxhdWRpJTIwcTV8ZW58MXx8fHwxNzU3NzYxODg0fDA&ixlib=rb-4.1.0&q=80&w=400'
+            },
+            {
+                id: 6,
+                name: 'Toyota Corolla',
+                class: 'economy',
+                brand: 'toyota',
+                body: 'sedan',
+                price: 2200,
+                features: ['Автомат', 'Кондиционер', 'Bluetooth'],
+                rating: 4.6,
+                image: 'https://images.unsplash.com/photo-1621007947382-bb3c3994e3fb?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx0b3lvdGElMjBjb3JvbGxhfGVufDF8fHx8MTc1Nzc2MTg4NHww&ixlib=rb-4.1.0&q=80&w=400'
+            },
+            {
+                id: 7,
+                name: 'BMW X5',
+                class: 'premium',
+                brand: 'bmw',
+                body: 'suv',
+                price: 7000,
+                features: ['Полный привод', 'Премиум', 'Панорама'],
+                rating: 4.8,
+                image: 'https://images.unsplash.com/photo-1555215695-3004980ad54e?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxibXclMjB4NXxlbnwxfHx8fDE3NTc3NjE4ODR8MA&ixlib=rb-4.1.0&q=80&w=400'
+            },
+            {
+                id: 8,
+                name: 'Volkswagen Passat',
+                class: 'economy',
+                brand: 'volkswagen',
+                body: 'wagon',
+                price: 2800,
+                features: ['Автомат', 'Большой багажник', 'Навигация'],
+                rating: 4.4,
+                image: 'https://images.unsplash.com/photo-1606664515524-ed2f786a0bd6?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHx2b2xrc3dhZ2VuJTIwcGFzc2F0fGVufDF8fHx8MTc1Nzc2MTg4NHww&ixlib=rb-4.1.0&q=80&w=400'
+            }
+        ];
+
+        let filteredCars = [...cars];
+        let currentUser = null;
+
+        // Check if user is logged in
+        function checkAuth() {
+            const userData = localStorage.getItem('currentUser');
+            if (userData) {
+                currentUser = JSON.parse(userData);
+                const userMenu = document.getElementById('userMenu');
+                userMenu.innerHTML = `
+                    <a href="profile.html" class="nav-item">👤 ${currentUser.firstName}</a>
+                    <a href="#" onclick="logout()" class="btn btn-outline">Выйти</a>
+                `;
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.reload();
+        }
+
+        // Render cars
+        function renderCars(carsToRender) {
+            const grid = document.getElementById('carsGrid');
+            const noMessage = document.getElementById('noCarsMessage');
+            
+            if (carsToRender.length === 0) {
+                grid.style.display = 'none';
+                noMessage.style.display = 'block';
+                return;
+            }
+            
+            grid.style.display = 'grid';
+            noMessage.style.display = 'none';
+            
+            grid.innerHTML = carsToRender.map(car => `
+                <div class="car-card">
+                    <img src="${car.image}" alt="${car.name}" class="car-image">
+                    <div class="car-info">
+                        <h3 class="car-name">${car.name}</h3>
+                        <div class="car-features">
+                            ${car.features.map(feature => `<span class="car-feature">${feature}</span>`).join('')}
+                        </div>
+                        <div style="display: flex; justify-content: space-between; align-items: center; margin: 1rem 0;">
+                            <div class="car-price">${car.price} ₽/день</div>
+                            <div style="color: #f59e0b;">⭐ ${car.rating}</div>
+                        </div>
+                        <button class="btn btn-primary" style="width: 100%;" onclick="selectCar(${car.id})">
+                            Забронировать
+                        </button>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Apply filters
+        function applyFilters() {
+            const classFilter = document.getElementById('classFilter').value;
+            const brandFilter = document.getElementById('brandFilter').value;
+            const priceFilter = document.getElementById('priceFilter').value;
+            const bodyFilter = document.getElementById('bodyFilter').value;
+            
+            filteredCars = cars.filter(car => {
+                let matches = true;
+                
+                if (classFilter && car.class !== classFilter) matches = false;
+                if (brandFilter && car.brand !== brandFilter) matches = false;
+                if (bodyFilter && car.body !== bodyFilter) matches = false;
+                
+                if (priceFilter) {
+                    const [min, max] = priceFilter.split('-').map(p => p.replace('+', ''));
+                    if (max) {
+                        if (car.price < parseInt(min) || car.price > parseInt(max)) matches = false;
+                    } else {
+                        if (car.price < parseInt(min)) matches = false;
+                    }
+                }
+                
+                return matches;
+            });
+            
+            sortCars();
+        }
+
+        // Clear filters
+        function clearFilters() {
+            document.getElementById('classFilter').value = '';
+            document.getElementById('brandFilter').value = '';
+            document.getElementById('priceFilter').value = '';
+            document.getElementById('bodyFilter').value = '';
+            filteredCars = [...cars];
+            sortCars();
+        }
+
+        // Sort cars
+        function sortCars() {
+            const sortBy = document.getElementById('sortFilter').value;
+            
+            switch (sortBy) {
+                case 'price-asc':
+                    filteredCars.sort((a, b) => a.price - b.price);
+                    break;
+                case 'price-desc':
+                    filteredCars.sort((a, b) => b.price - a.price);
+                    break;
+                case 'name':
+                    filteredCars.sort((a, b) => a.name.localeCompare(b.name));
+                    break;
+                case 'rating':
+                    filteredCars.sort((a, b) => b.rating - a.rating);
+                    break;
+            }
+            
+            renderCars(filteredCars);
+        }
+
+        // Select car for booking
+        function selectCar(carId) {
+            if (!currentUser) {
+                alert('Для бронирования необходимо войти в аккаунт');
+                window.location.href = 'login.html';
+                return;
+            }
+            
+            const car = cars.find(c => c.id === carId);
+            localStorage.setItem('selectedCar', JSON.stringify(car));
+            window.location.href = 'booking.html';
+        }
+
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            const navMenu = document.querySelector('.nav-menu');
+            navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // Initialize page
+        checkAuth();
+        renderCars(filteredCars);
+    </script>
+</body>
+</html>

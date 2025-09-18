@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>AutoRent - На любой случай, любой автомобиль</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">🚗</div>
+                    <div>
+                        <h1>AutoRent</h1>
+                        <p>На любой случай</p>
+                    </div>
+                </a>
+
+                <div class="nav-menu">
+                    <a href="index.html" class="nav-item active">Главная</a>
+                    <a href="branches.html" class="nav-item">Филиалы</a>
+                    <a href="booking.html" class="nav-item">Бронирование</a>
+                    <a href="cars.html" class="nav-item">Автомобили</a>
+                </div>
+
+                <div class="user-menu">
+                    <a href="login.html" class="btn btn-outline">Войти</a>
+                    <a href="register.html" class="btn btn-primary">Регистрация</a>
+                </div>
+
+                <button class="mobile-menu-btn">☰</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <h1>
+                    На любой случай, 
+                    <span class="hero-highlight">любой автомобиль</span>
+                </h1>
+                <p>Широкий выбор автомобилей, удобное бронирование, лучшие цены</p>
+                
+                <div class="hero-features">
+                    <div class="hero-feature">✓ Без залога</div>
+                    <div class="hero-feature">✓ Полная страховка</div>
+                    <div class="hero-feature">✓ Топливо включено</div>
+                </div>
+
+                <a href="cars.html" class="btn btn-secondary">
+                    Выбрать автомобиль →
+                </a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Search Form -->
+    <section class="search-section">
+        <div class="container">
+            <div class="search-form">
+                <div class="text-center">
+                    <h2>Найти автомобиль</h2>
+                    <p>Выберите параметры для поиска идеального автомобиля</p>
+                </div>
+                
+                <form class="form-grid">
+                    <div class="form-group">
+                        <label class="form-label">Класс автомобиля</label>
+                        <select class="form-select">
+                            <option value="">Выберите класс</option>
+                            <option value="economy">Эконом</option>
+                            <option value="premium">Премиум</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Марка</label>
+                        <select class="form-select">
+                            <option value="">Выберите марку</option>
+                            <option value="toyota">Toyota</option>
+                            <option value="bmw">BMW</option>
+                            <option value="mercedes">Mercedes-Benz</option>
+                            <option value="audi">Audi</option>
+                            <option value="volkswagen">Volkswagen</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group">
+                        <label class="form-label">Модель</label>
+                        <select class="form-select" disabled>
+                            <option value="">Выберите модель</option>
+                        </select>
+                    </div>
+                </form>
+
+                <div class="text-center">
+                    <a href="cars.html" class="btn btn-primary">
+                        🔍 Найти автомобили
+                    </a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Section -->
+    <section class="trust-section">
+        <div class="container">
+            <div class="text-center">
+                <h2>Почему выбирают нас</h2>
+                <p>Мы заботимся о вашем комфорте и безопасности</p>
+            </div>
+
+            <div class="trust-features">
+                <div class="trust-feature card">
+                    <div class="trust-icon">🛡️</div>
+                    <h3>Надежность</h3>
+                    <p>Все автомобили проходят техосмотр и застрахованы</p>
+                </div>
+
+                <div class="trust-feature card">
+                    <div class="trust-icon">⚡</div>
+                    <h3>Быстрое оформление</h3>
+                    <p>Бронирование за 5 минут, получение за 15 минут</p>
+                </div>
+
+                <div class="trust-feature card">
+                    <div class="trust-icon">👥</div>
+                    <h3>Поддержка 24/7</h3>
+                    <p>Круглосуточная помощь на дороге и консультации</p>
+                </div>
+
+                <div class="trust-feature card">
+                    <div class="trust-icon">⭐</div>
+                    <h3>Высокие оценки</h3>
+                    <p>Более 10 000 довольных клиентов, рейтинг 4.8/5</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- News Section -->
+    <section class="news-section">
+        <div class="container">
+            <div class="text-center">
+                <h2>Новости и акции</h2>
+                <p>Будьте в курсе последних предложений</p>
+            </div>
+
+            <div class="news-grid">
+                <article class="news-card">
+                    <img src="https://images.unsplash.com/photo-1721994234246-45087e5aca16?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxsdXh1cnklMjBjYXIlMjByZW50YWx8ZW58MXx8fHwxNzU3NjUwNTg1fDA&ixlib=rb-4.1.0&q=80&w=400" alt="Новые автомобили премиум-класса" class="news-image">
+                    <div class="news-content">
+                        <h3 class="news-title">Новые автомобили премиум-класса</h3>
+                        <p class="news-description">Пополнили автопарк современными моделями BMW и Mercedes-Benz с улучшенным комфортом.</p>
+                        <a href="#" class="btn btn-outline">Подробнее →</a>
+                    </div>
+                </article>
+
+                <article class="news-card">
+                    <img src="https://images.unsplash.com/photo-1631477404040-e85358c37ae8?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxtb2Rlcm4lMjBjaXR5JTIwY2FyfGVufDF8fHx8MTc1Nzc2MTg4NHww&ixlib=rb-4.1.0&q=80&w=400" alt="Скидки на длительную аренду" class="news-image">
+                    <div class="news-content">
+                        <h3 class="news-title">Скидки на длительную аренду</h3>
+                        <p class="news-description">Специальные условия для аренды от 7 дней. Экономьте до 25% при долгосрочной аренде.</p>
+                        <a href="#" class="btn btn-outline">Подробнее →</a>
+                    </div>
+                </article>
+
+                <article class="news-card">
+                    <img src="https://images.unsplash.com/photo-1659722354485-4ca621fb22c1?crop=entropy&cs=tinysrgb&fit=max&fm=jpg&ixid=M3w3Nzg4Nzd8MHwxfHNlYXJjaHwxfHxjYXIlMjBmbGVldCUyMHJlbnRhbHxlbnwxfHx8fDE3NTc3NjE4ODd8MA&ixlib=rb-4.1.0&q=80&w=400" alt="Открытие нового филиала" class="news-image">
+                    <div class="news-content">
+                        <h3 class="news-title">Открытие нового филиала</h3>
+                        <p class="news-description">Теперь мы работаем в центре города! Новый филиал с удобной парковкой и быстрым оформлением.</p>
+                        <a href="branches.html" class="btn btn-outline">Подробнее →</a>
+                    </div>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Контакты</h3>
+                    <p>Телефон: 8 (800) 555-35-35</p>
+                    <p>Звонок бесплатный</p>
+                    <p>Email: info@autorent.ru</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Навигация</h3>
+                    <a href="index.html">Главная</a>
+                    <a href="branches.html">Филиалы</a>
+                    <a href="booking.html">Бронирование</a>
+                    <a href="cars.html">Автомобили</a>
+                    <a href="login.html">Войти</a>
+                    <a href="register.html">Регистрация</a>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>Услуги</h3>
+                    <a href="#">Краткосрочная аренда</a>
+                    <a href="#">Долгосрочная аренда</a>
+                    <a href="#">Корпоративным клиентам</a>
+                    <a href="#">Страхование</a>
+                </div>
+
+                <div class="footer-section">
+                    <h3>О компании</h3>
+                    <p>Надежный сервис аренды автомобилей. На любой случай, любой автомобиль.</p>
+                    <div style="margin-top: 1rem;">
+                        <strong>Режим работы:</strong><br>
+                        Пн-Вс: 08:00 - 22:00
+                    </div>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 AutoRent. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Simple mobile menu toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            const navMenu = document.querySelector('.nav-menu');
+            navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // Dynamic model selection
+        const brandSelect = document.querySelector('.form-select:nth-of-type(2)');
+        const modelSelect = document.querySelector('.form-select:nth-of-type(3)');
+        
+        const models = {
+            toyota: ['Camry', 'Corolla', 'RAV4'],
+            bmw: ['3 Series', '5 Series', 'X5'],
+            mercedes: ['C-Class', 'E-Class', 'GLC'],
+            audi: ['A4', 'A6', 'Q5'],
+            volkswagen: ['Polo', 'Passat', 'Tiguan']
+        };
+
+        brandSelect.addEventListener('change', function() {
+            const selectedBrand = this.value;
+            modelSelect.innerHTML = '<option value="">Выберите модель</option>';
+            
+            if (selectedBrand && models[selectedBrand]) {
+                modelSelect.disabled = false;
+                models[selectedBrand].forEach(model => {
+                    const option = document.createElement('option');
+                    option.value = model.toLowerCase();
+                    option.textContent = model;
+                    modelSelect.appendChild(option);
+                });
+            } else {
+                modelSelect.disabled = true;
+            }
+        });
+    </script>
+</body>
+</html>

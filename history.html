@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>История бронирований - AutoRent</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">🚗</div>
+                    <div>
+                        <h1>AutoRent</h1>
+                        <p>На любой случай</p>
+                    </div>
+                </a>
+
+                <div class="nav-menu">
+                    <a href="index.html" class="nav-item">Главная</a>
+                    <a href="branches.html" class="nav-item">Филиалы</a>
+                    <a href="booking.html" class="nav-item">Бронирование</a>
+                    <a href="cars.html" class="nav-item">Автомобили</a>
+                </div>
+
+                <div class="user-menu" id="userMenu">
+                    <!-- Will be populated by JS -->
+                </div>
+
+                <button class="mobile-menu-btn">☰</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">История бронирований</h1>
+            <p class="page-subtitle">Все ваши аренды автомобилей</p>
+        </div>
+    </section>
+
+    <div class="content-section">
+        <div class="container">
+            <!-- Auth required message -->
+            <div id="authRequired" class="text-center" style="display: none;">
+                <div class="card" style="max-width: 500px; margin: 0 auto; padding: 3rem;">
+                    <h2>Требуется авторизация</h2>
+                    <p style="margin: 1rem 0; color: #6b7280;">Для просмотра истории необходимо войти в аккаунт</p>
+                    <div style="display: flex; gap: 1rem; justify-content: center;">
+                        <a href="login.html" class="btn btn-primary">Войти</a>
+                        <a href="register.html" class="btn btn-outline">Регистрация</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- History content -->
+            <div id="historyContent" style="display: none;">
+                <!-- Filters -->
+                <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+                    <h3 style="margin-bottom: 1rem;">Фильтры</h3>
+                    <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem;">
+                        <div class="form-group">
+                            <label class="form-label">Статус</label>
+                            <select class="form-select" id="statusFilter" onchange="filterBookings()">
+                                <option value="">Все статусы</option>
+                                <option value="confirmed">Подтверждено</option>
+                                <option value="completed">Завершено</option>
+                                <option value="cancelled">Отменено</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Период</label>
+                            <select class="form-select" id="periodFilter" onchange="filterBookings()">
+                                <option value="">Все время</option>
+                                <option value="month">Последний месяц</option>
+                                <option value="quarter">Последние 3 месяца</option>
+                                <option value="year">Последний год</option>
+                            </select>
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="form-label">Сортировка</label>
+                            <select class="form-select" id="sortFilter" onchange="filterBookings()">
+                                <option value="date-desc">Сначала новые</option>
+                                <option value="date-asc">Сначала старые</option>
+                                <option value="cost-desc">По убыванию стоимости</option>
+                                <option value="cost-asc">По возрастанию стоимости</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bookings List -->
+                <div id="bookingsList">
+                    <!-- Will be populated by JS -->
+                </div>
+
+                <!-- No bookings message -->
+                <div id="noBookingsMessage" class="text-center" style="display: none;">
+                    <div class="card" style="padding: 3rem;">
+                        <h3>У вас пока нет бронирований</h3>
+                        <p style="color: #6b7280; margin: 1rem 0;">Выберите автомобиль и оформите первое бронирование</p>
+                        <a href="cars.html" class="btn btn-primary">
+                            🚗 Выбрать автомобиль
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Контакты</h3>
+                    <p>Телефон: 8 (800) 555-35-35</p>
+                    <p>Звонок бесплатный</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Навигация</h3>
+                    <a href="index.html">Главная</a>
+                    <a href="branches.html">Филиалы</a>
+                    <a href="cars.html">Автомобили</a>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>О компании</h3>
+                    <p>Надежный сервис аренды автомобилей. На любой случай, любой автомобиль.</p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 AutoRent. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let currentUser = null;
+        let allBookings = [];
+        let filteredBookings = [];
+
+        // Initialize page
+        function init() {
+            const userData = localStorage.getItem('currentUser');
+            if (userData) {
+                currentUser = JSON.parse(userData);
+                
+                document.getElementById('userMenu').innerHTML = `
+                    <a href="profile.html" class="nav-item">👤 ${currentUser.firstName}</a>
+                    <a href="history.html" class="nav-item active">📋 История</a>
+                    <a href="cards.html" class="nav-item">💳 Карты</a>
+                    <a href="#" onclick="logout()" class="btn btn-outline">Выйти</a>
+                `;
+                
+                loadBookings();
+                document.getElementById('historyContent').style.display = 'block';
+            } else {
+                document.getElementById('userMenu').innerHTML = `
+                    <a href="login.html" class="btn btn-outline">Войти</a>
+                    <a href="register.html" class="btn btn-primary">Регистрация</a>
+                `;
+                document.getElementById('authRequired').style.display = 'block';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        function loadBookings() {
+            const bookings = JSON.parse(localStorage.getItem('userBookings') || '[]');
+            allBookings = bookings
+                .filter(b => b.user.id === currentUser.id)
+                .map(booking => {
+                    // Update status based on dates
+                    const endDate = new Date(booking.endDate);
+                    const today = new Date();
+                    
+                    if (booking.status === 'confirmed' && endDate < today) {
+                        booking.status = 'completed';
+                    }
+                    
+                    return booking;
+                });
+            
+            // Save updated bookings
+            const allUserBookings = JSON.parse(localStorage.getItem('userBookings') || '[]');
+            const updatedBookings = allUserBookings.map(b => {
+                if (b.user.id === currentUser.id) {
+                    const found = allBookings.find(ab => ab.id === b.id);
+                    return found || b;
+                }
+                return b;
+            });
+            localStorage.setItem('userBookings', JSON.stringify(updatedBookings));
+            
+            filteredBookings = [...allBookings];
+            filterBookings();
+        }
+
+        function filterBookings() {
+            const statusFilter = document.getElementById('statusFilter').value;
+            const periodFilter = document.getElementById('periodFilter').value;
+            const sortFilter = document.getElementById('sortFilter').value;
+            
+            // Apply filters
+            filteredBookings = allBookings.filter(booking => {
+                let matches = true;
+                
+                // Status filter
+                if (statusFilter && booking.status !== statusFilter) {
+                    matches = false;
+                }
+                
+                // Period filter
+                if (periodFilter) {
+                    const bookingDate = new Date(booking.createdAt);
+                    const now = new Date();
+                    let cutoffDate = new Date();
+                    
+                    switch (periodFilter) {
+                        case 'month':
+                            cutoffDate.setMonth(now.getMonth() - 1);
+                            break;
+                        case 'quarter':
+                            cutoffDate.setMonth(now.getMonth() - 3);
+                            break;
+                        case 'year':
+                            cutoffDate.setFullYear(now.getFullYear() - 1);
+                            break;
+                    }
+                    
+                    if (bookingDate < cutoffDate) {
+                        matches = false;
+                    }
+                }
+                
+                return matches;
+            });
+            
+            // Apply sorting
+            switch (sortFilter) {
+                case 'date-desc':
+                    filteredBookings.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+                    break;
+                case 'date-asc':
+                    filteredBookings.sort((a, b) => new Date(a.createdAt) - new Date(b.createdAt));
+                    break;
+                case 'cost-desc':
+                    filteredBookings.sort((a, b) => {
+                        const costA = parseInt(a.totalCost.replace(/[^\d]/g, ''));
+                        const costB = parseInt(b.totalCost.replace(/[^\d]/g, ''));
+                        return costB - costA;
+                    });
+                    break;
+                case 'cost-asc':
+                    filteredBookings.sort((a, b) => {
+                        const costA = parseInt(a.totalCost.replace(/[^\d]/g, ''));
+                        const costB = parseInt(b.totalCost.replace(/[^\d]/g, ''));
+                        return costA - costB;
+                    });
+                    break;
+            }
+            
+            renderBookings();
+        }
+
+        function renderBookings() {
+            const container = document.getElementById('bookingsList');
+            const noMessage = document.getElementById('noBookingsMessage');
+            
+            if (filteredBookings.length === 0) {
+                container.style.display = 'none';
+                noMessage.style.display = 'block';
+                return;
+            }
+            
+            container.style.display = 'block';
+            noMessage.style.display = 'none';
+            
+            container.innerHTML = filteredBookings.map(booking => {
+                const startDate = new Date(booking.startDate).toLocaleDateString('ru-RU');
+                const endDate = new Date(booking.endDate).toLocaleDateString('ru-RU');
+                const createdDate = new Date(booking.createdAt).toLocaleDateString('ru-RU');
+                
+                const statusConfig = {
+                    confirmed: { color: '#10b981', text: 'Подтверждено', icon: '✅' },
+                    completed: { color: '#6b7280', text: 'Завершено', icon: '✅' },
+                    cancelled: { color: '#ef4444', text: 'Отменено', icon: '❌' }
+                };
+                
+                const status = statusConfig[booking.status] || statusConfig.confirmed;
+                
+                const branchNames = {
+                    center: 'Центральный офис',
+                    airport: 'Аэропорт Домодедово',
+                    metro: 'У метро Парк Культуры',
+                    mall: 'ТЦ Европейский',
+                    business: 'Бизнес-центр Белая Площадь'
+                };
+                
+                return `
+                    <div class="card" style="padding: 2rem; margin-bottom: 2rem;">
+                        <div style="display: grid; grid-template-columns: 120px 1fr auto; gap: 2rem; align-items: start;">
+                            <!-- Car Image -->
+                            <img src="${booking.car.image}" alt="${booking.car.name}" 
+                                 style="width: 120px; height: 80px; object-fit: cover; border-radius: 8px;">
+                            
+                            <!-- Booking Details -->
+                            <div>
+                                <div style="display: flex; align-items: center; gap: 1rem; margin-bottom: 1rem;">
+                                    <h3 style="margin: 0;">${booking.car.name}</h3>
+                                    <span style="color: ${status.color}; font-weight: 600; font-size: 0.9rem;">
+                                        ${status.icon} ${status.text}
+                                    </span>
+                                </div>
+                                
+                                <div style="display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; color: #6b7280; font-size: 0.9rem;">
+                                    <div>
+                                        <strong>Период аренды:</strong><br>
+                                        ${startDate} ${booking.startTime} - ${endDate} ${booking.endTime}
+                                    </div>
+                                    <div>
+                                        <strong>Филиал:</strong><br>
+                                        ${branchNames[booking.branch] || booking.branch}
+                                    </div>
+                                    <div>
+                                        <strong>Дата бронирования:</strong><br>
+                                        ${createdDate}
+                                    </div>
+                                </div>
+                                
+                                ${booking.services && booking.services.length > 0 ? `
+                                    <div style="margin-top: 1rem;">
+                                        <strong style="color: #374151;">Дополнительные услуги:</strong>
+                                        <div style="display: flex; gap: 0.5rem; margin-top: 0.5rem; flex-wrap: wrap;">
+                                            ${booking.services.map(service => {
+                                                const serviceNames = {
+                                                    gps: 'GPS-навигатор',
+                                                    'child-seat': 'Детское кресло',
+                                                    wifi: 'Wi-Fi роутер',
+                                                    driver: 'Личный водитель'
+                                                };
+                                                return `<span class="car-feature">${serviceNames[service] || service}</span>`;
+                                            }).join('')}
+                                        </div>
+                                    </div>
+                                ` : ''}
+                                
+                                ${booking.comments ? `
+                                    <div style="margin-top: 1rem;">
+                                        <strong style="color: #374151;">Комментарии:</strong>
+                                        <p style="margin: 0.5rem 0 0 0; color: #6b7280;">${booking.comments}</p>
+                                    </div>
+                                ` : ''}
+                            </div>
+                            
+                            <!-- Price and Actions -->
+                            <div style="text-align: right;">
+                                <div style="font-size: 1.5rem; font-weight: 700; color: #3b82f6; margin-bottom: 1rem;">
+                                    ${booking.totalCost}
+                                </div>
+                                
+                                <div style="display: flex; flex-direction: column; gap: 0.5rem;">
+                                    ${booking.status === 'confirmed' ? `
+                                        <button onclick="cancelBooking('${booking.id}')" 
+                                                class="btn" style="background: #ef4444; color: white; font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                            Отменить
+                                        </button>
+                                    ` : ''}
+                                    
+                                    <button onclick="repeatBooking('${booking.id}')" 
+                                            class="btn btn-outline" style="font-size: 0.9rem; padding: 0.5rem 1rem;">
+                                        Повторить
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+            }).join('');
+        }
+
+        function cancelBooking(bookingId) {
+            if (!confirm('Вы уверены, что хотите отменить это бронирование?')) {
+                return;
+            }
+            
+            // Update booking status
+            const allUserBookings = JSON.parse(localStorage.getItem('userBookings') || '[]');
+            const updatedBookings = allUserBookings.map(booking => {
+                if (booking.id === bookingId) {
+                    booking.status = 'cancelled';
+                }
+                return booking;
+            });
+            
+            localStorage.setItem('userBookings', JSON.stringify(updatedBookings));
+            
+            // Reload bookings
+            loadBookings();
+            
+            alert('Бронирование отменено');
+        }
+
+        function repeatBooking(bookingId) {
+            const booking = allBookings.find(b => b.id === bookingId);
+            if (booking) {
+                localStorage.setItem('selectedCar', JSON.stringify(booking.car));
+                window.location.href = 'booking.html';
+            }
+        }
+
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            const navMenu = document.querySelector('.nav-menu');
+            navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // Initialize page
+        init();
+    </script>
+</body>
+</html>

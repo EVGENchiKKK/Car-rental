@@ -1,0 +1,479 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Бронирование - AutoRent</title>
+    <link rel="stylesheet" href="styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="container">
+            <nav class="nav">
+                <a href="index.html" class="logo">
+                    <div class="logo-icon">🚗</div>
+                    <div>
+                        <h1>AutoRent</h1>
+                        <p>На любой случай</p>
+                    </div>
+                </a>
+
+                <div class="nav-menu">
+                    <a href="index.html" class="nav-item">Главная</a>
+                    <a href="branches.html" class="nav-item">Филиалы</a>
+                    <a href="booking.html" class="nav-item active">Бронирование</a>
+                    <a href="cars.html" class="nav-item">Автомобили</a>
+                </div>
+
+                <div class="user-menu" id="userMenu">
+                    <!-- Will be populated by JS -->
+                </div>
+
+                <button class="mobile-menu-btn">☰</button>
+            </nav>
+        </div>
+    </header>
+
+    <!-- Page Header -->
+    <section class="page-header">
+        <div class="container">
+            <h1 class="page-title">Бронирование автомобиля</h1>
+            <p class="page-subtitle">Оформите аренду быстро и удобно</p>
+        </div>
+    </section>
+
+    <div class="content-section">
+        <div class="container">
+            <!-- Auth required message -->
+            <div id="authRequired" class="text-center" style="display: none;">
+                <div class="card" style="max-width: 500px; margin: 0 auto; padding: 3rem;">
+                    <h2>Требуется авторизация</h2>
+                    <p style="margin: 1rem 0; color: #6b7280;">Для оформления бронирования необходимо войти в аккаунт</p>
+                    <div style="display: flex; gap: 1rem; justify-content: center;">
+                        <a href="login.html" class="btn btn-primary">Войти</a>
+                        <a href="register.html" class="btn btn-outline">Регистрация</a>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Booking form -->
+            <div id="bookingContent" style="display: none;">
+                <div style="display: grid; grid-template-columns: 1fr 400px; gap: 2rem; align-items: start;">
+                    
+                    <!-- Main form -->
+                    <div class="card" style="padding: 2rem;">
+                        <h2 style="margin-bottom: 2rem;">Детали бронирования</h2>
+                        
+                        <form id="bookingForm">
+                            <!-- Car Selection -->
+                            <div class="form-field">
+                                <label>Выбранный автомобиль</label>
+                                <div id="selectedCarDisplay" class="card" style="padding: 1rem; background: #f8fafc; margin-bottom: 1rem;">
+                                    <div style="display: flex; align-items: center; gap: 1rem;">
+                                        <img id="carImage" src="" alt="" style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px;">
+                                        <div>
+                                            <h4 id="carName"></h4>
+                                            <p id="carPrice" style="color: #3b82f6; font-weight: 600; margin: 0;"></p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <a href="cars.html" class="btn btn-outline">Изменить автомобиль</a>
+                            </div>
+
+                            <!-- Date Selection -->
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-field">
+                                    <label for="startDate">📅 Дата начала</label>
+                                    <input type="date" id="startDate" name="startDate" required>
+                                    <div class="error-message" id="startDateError"></div>
+                                </div>
+
+                                <div class="form-field">
+                                    <label for="endDate">📅 Дата окончания</label>
+                                    <input type="date" id="endDate" name="endDate" required>
+                                    <div class="error-message" id="endDateError"></div>
+                                </div>
+                            </div>
+
+                            <!-- Time Selection -->
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
+                                <div class="form-field">
+                                    <label for="startTime">⏰ Время получения</label>
+                                    <select id="startTime" name="startTime" class="form-select" required>
+                                        <option value="">Выберите время</option>
+                                        <option value="09:00">09:00</option>
+                                        <option value="10:00">10:00</option>
+                                        <option value="11:00">11:00</option>
+                                        <option value="12:00">12:00</option>
+                                        <option value="13:00">13:00</option>
+                                        <option value="14:00">14:00</option>
+                                        <option value="15:00">15:00</option>
+                                        <option value="16:00">16:00</option>
+                                        <option value="17:00">17:00</option>
+                                        <option value="18:00">18:00</option>
+                                    </select>
+                                </div>
+
+                                <div class="form-field">
+                                    <label for="endTime">⏰ Время возврата</label>
+                                    <select id="endTime" name="endTime" class="form-select" required>
+                                        <option value="">Выберите время</option>
+                                        <option value="09:00">09:00</option>
+                                        <option value="10:00">10:00</option>
+                                        <option value="11:00">11:00</option>
+                                        <option value="12:00">12:00</option>
+                                        <option value="13:00">13:00</option>
+                                        <option value="14:00">14:00</option>
+                                        <option value="15:00">15:00</option>
+                                        <option value="16:00">16:00</option>
+                                        <option value="17:00">17:00</option>
+                                        <option value="18:00">18:00</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <!-- Branch Selection -->
+                            <div class="form-field">
+                                <label for="branch">🏢 Филиал получения</label>
+                                <select id="branch" name="branch" class="form-select" required>
+                                    <option value="">Выберите филиал</option>
+                                    <option value="center">Центральный офис - ул. Тверская, 10</option>
+                                    <option value="airport">Аэропорт Домодедово - Терминал А</option>
+                                    <option value="metro">У метро Парк Культуры - ул. Соколова, 5</option>
+                                    <option value="mall">ТЦ Европейский - Площадь Киевского Вокзала, 2</option>
+                                    <option value="business">Бизнес-центр Белая Площадь - ул. Бутырская, 76</option>
+                                </select>
+                            </div>
+
+                            <!-- Additional Services -->
+                            <div class="form-field">
+                                <label>Дополнительные услуги</label>
+                                <div style="display: grid; gap: 0.5rem; margin-top: 0.5rem;">
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                        <input type="checkbox" name="services" value="gps" data-price="300">
+                                        GPS-навигатор (+300 ₽/день)
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                        <input type="checkbox" name="services" value="child-seat" data-price="500">
+                                        Детское кресло (+500 ₽/день)
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                        <input type="checkbox" name="services" value="wifi" data-price="200">
+                                        Wi-Fi роутер (+200 ₽/день)
+                                    </label>
+                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
+                                        <input type="checkbox" name="services" value="driver" data-price="2000">
+                                        Личный водитель (+2000 ₽/день)
+                                    </label>
+                                </div>
+                            </div>
+
+                            <!-- Comments -->
+                            <div class="form-field">
+                                <label for="comments">💬 Комментарии (необязательно)</label>
+                                <textarea id="comments" name="comments" rows="3" class="form-input" placeholder="Дополнительные пожелания или комментарии"></textarea>
+                            </div>
+                        </form>
+                    </div>
+
+                    <!-- Booking Summary -->
+                    <div class="card" style="padding: 2rem; position: sticky; top: 100px;">
+                        <h3 style="margin-bottom: 1.5rem;">Итоговая стоимость</h3>
+                        
+                        <div id="costBreakdown">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                <span>Аренда автомобиля:</span>
+                                <span id="baseCost">0 ₽</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;" id="servicesRow" style="display: none;">
+                                <span>Дополнительные услуги:</span>
+                                <span id="servicesCost">0 ₽</span>
+                            </div>
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; color: #10b981;" id="discountRow" style="display: none;">
+                                <span>Скидка за длительность:</span>
+                                <span id="discountAmount">-0 ₽</span>
+                            </div>
+                            <hr style="margin: 1rem 0;">
+                            <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.25rem;">
+                                <span>Итого:</span>
+                                <span id="totalCost">0 ₽</span>
+                            </div>
+                        </div>
+
+                        <div id="discountInfo" style="background: #ecfdf5; padding: 1rem; border-radius: 8px; margin: 1rem 0; display: none;">
+                            <p style="color: #065f46; margin: 0; font-size: 0.9rem;">
+                                💰 <strong>Система скидок:</strong><br>
+                                5% за каждые 3 дня аренды (макс. 25%)
+                            </p>
+                        </div>
+
+                        <button type="submit" form="bookingForm" class="btn btn-primary" style="width: 100%; margin-top: 1rem;" id="bookingBtn">
+                            Забронировать
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>Контакты</h3>
+                    <p>Телефон: 8 (800) 555-35-35</p>
+                    <p>Звонок бесплатный</p>
+                </div>
+
+                <div class="footer-section">
+                    <h3>Навигация</h3>
+                    <a href="index.html">Главная</a>
+                    <a href="branches.html">Филиалы</a>
+                    <a href="cars.html">Автомобили</a>
+                </div>
+                
+                <div class="footer-section">
+                    <h3>О компании</h3>
+                    <p>Надежный сервис аренды автомобилей. На любой случай, любой автомобиль.</p>
+                </div>
+            </div>
+
+            <div class="footer-bottom">
+                <p>&copy; 2025 AutoRent. Все права защищены.</p>
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        let currentUser = null;
+        let selectedCar = null;
+
+        // Check authentication and initialize
+        function init() {
+            // Check auth
+            const userData = localStorage.getItem('currentUser');
+            if (userData) {
+                currentUser = JSON.parse(userData);
+                document.getElementById('userMenu').innerHTML = `
+                    <a href="profile.html" class="nav-item">👤 ${currentUser.firstName}</a>
+                    <a href="#" onclick="logout()" class="btn btn-outline">Выйти</a>
+                `;
+                
+                // Load selected car
+                const carData = localStorage.getItem('selectedCar');
+                if (carData) {
+                    selectedCar = JSON.parse(carData);
+                    displaySelectedCar();
+                    document.getElementById('bookingContent').style.display = 'block';
+                } else {
+                    // No car selected, redirect to cars page
+                    window.location.href = 'cars.html';
+                }
+            } else {
+                document.getElementById('userMenu').innerHTML = `
+                    <a href="login.html" class="btn btn-outline">Войти</a>
+                    <a href="register.html" class="btn btn-primary">Регистрация</a>
+                `;
+                document.getElementById('authRequired').style.display = 'block';
+            }
+        }
+
+        function logout() {
+            localStorage.removeItem('currentUser');
+            window.location.href = 'index.html';
+        }
+
+        function displaySelectedCar() {
+            document.getElementById('carImage').src = selectedCar.image;
+            document.getElementById('carImage').alt = selectedCar.name;
+            document.getElementById('carName').textContent = selectedCar.name;
+            document.getElementById('carPrice').textContent = `${selectedCar.price} ₽/день`;
+        }
+
+        // Calculate total cost
+        function calculateCost() {
+            const startDate = document.getElementById('startDate').value;
+            const endDate = document.getElementById('endDate').value;
+            
+            if (!startDate || !endDate || !selectedCar) return;
+            
+            const start = new Date(startDate);
+            const end = new Date(endDate);
+            const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+            
+            if (days <= 0) return;
+            
+            // Base cost
+            const baseCost = selectedCar.price * days;
+            
+            // Additional services
+            const services = document.querySelectorAll('input[name="services"]:checked');
+            let servicesCost = 0;
+            services.forEach(service => {
+                servicesCost += parseInt(service.dataset.price) * days;
+            });
+            
+            // Calculate discount (5% for every 3 days, max 25%)
+            const discountPercentage = Math.min(Math.floor(days / 3) * 5, 25);
+            const discountAmount = Math.floor((baseCost + servicesCost) * discountPercentage / 100);
+            
+            const totalCost = baseCost + servicesCost - discountAmount;
+            
+            // Update UI
+            document.getElementById('baseCost').textContent = `${baseCost.toLocaleString()} ₽`;
+            
+            const servicesRow = document.getElementById('servicesRow');
+            if (servicesCost > 0) {
+                servicesRow.style.display = 'flex';
+                document.getElementById('servicesCost').textContent = `${servicesCost.toLocaleString()} ₽`;
+            } else {
+                servicesRow.style.display = 'none';
+            }
+            
+            const discountRow = document.getElementById('discountRow');
+            const discountInfo = document.getElementById('discountInfo');
+            if (discountAmount > 0) {
+                discountRow.style.display = 'flex';
+                discountInfo.style.display = 'block';
+                document.getElementById('discountAmount').textContent = `-${discountAmount.toLocaleString()} ₽`;
+            } else {
+                discountRow.style.display = 'none';
+                discountInfo.style.display = 'none';
+            }
+            
+            document.getElementById('totalCost').textContent = `${totalCost.toLocaleString()} ₽`;
+        }
+
+        // Set minimum dates
+        function setMinDates() {
+            const today = new Date();
+            const tomorrow = new Date(today);
+            tomorrow.setDate(tomorrow.getDate() + 1);
+            
+            document.getElementById('startDate').min = today.toISOString().split('T')[0];
+            document.getElementById('endDate').min = tomorrow.toISOString().split('T')[0];
+        }
+
+        // Update end date minimum when start date changes
+        document.getElementById('startDate').addEventListener('change', function() {
+            const startDate = new Date(this.value);
+            const nextDay = new Date(startDate);
+            nextDay.setDate(nextDay.getDate() + 1);
+            
+            document.getElementById('endDate').min = nextDay.toISOString().split('T')[0];
+            
+            // Clear end date if it's before the new minimum
+            const endDate = document.getElementById('endDate').value;
+            if (endDate && new Date(endDate) <= startDate) {
+                document.getElementById('endDate').value = '';
+            }
+            
+            calculateCost();
+        });
+
+        // Recalculate cost when any input changes
+        document.getElementById('endDate').addEventListener('change', calculateCost);
+        document.querySelectorAll('input[name="services"]').forEach(checkbox => {
+            checkbox.addEventListener('change', calculateCost);
+        });
+
+        // Form submission
+        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const formData = new FormData(this);
+            const data = Object.fromEntries(formData);
+            
+            // Validate form
+            let isValid = true;
+            document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
+            
+            if (!data.startDate) {
+                document.getElementById('startDateError').textContent = 'Выберите дату начала';
+                isValid = false;
+            }
+            
+            if (!data.endDate) {
+                document.getElementById('endDateError').textContent = 'Выберите дату окончания';
+                isValid = false;
+            }
+            
+            if (data.startDate && data.endDate) {
+                const start = new Date(data.startDate);
+                const end = new Date(data.endDate);
+                if (end <= start) {
+                    document.getElementById('endDateError').textContent = 'Дата окончания должна быть позже даты начала';
+                    isValid = false;
+                }
+            }
+            
+            if (!data.startTime) {
+                alert('Выберите время получения');
+                isValid = false;
+            }
+            
+            if (!data.endTime) {
+                alert('Выберите время возврата');
+                isValid = false;
+            }
+            
+            if (!data.branch) {
+                alert('Выберите филиал');
+                isValid = false;
+            }
+            
+            if (isValid) {
+                // Show loading
+                const btn = document.getElementById('bookingBtn');
+                btn.innerHTML = '⏳ Обработка...';
+                btn.disabled = true;
+                
+                // Simulate booking
+                setTimeout(() => {
+                    // Create booking object
+                    const booking = {
+                        id: Date.now().toString(),
+                        car: selectedCar,
+                        user: currentUser,
+                        startDate: data.startDate,
+                        endDate: data.endDate,
+                        startTime: data.startTime,
+                        endTime: data.endTime,
+                        branch: data.branch,
+                        services: Array.from(document.querySelectorAll('input[name="services"]:checked')).map(cb => cb.value),
+                        comments: data.comments,
+                        totalCost: document.getElementById('totalCost').textContent,
+                        status: 'confirmed',
+                        createdAt: new Date().toISOString()
+                    };
+                    
+                    // Save booking
+                    const bookings = JSON.parse(localStorage.getItem('userBookings') || '[]');
+                    bookings.push(booking);
+                    localStorage.setItem('userBookings', JSON.stringify(bookings));
+                    
+                    // Clear selected car
+                    localStorage.removeItem('selectedCar');
+                    
+                    // Redirect to history
+                    alert('Бронирование успешно оформлено!');
+                    window.location.href = 'history.html';
+                }, 2000);
+            }
+        });
+
+        // Mobile menu toggle
+        document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
+            const navMenu = document.querySelector('.nav-menu');
+            navMenu.style.display = navMenu.style.display === 'flex' ? 'none' : 'flex';
+        });
+
+        // Initialize page
+        init();
+        setMinDates();
+    </script>
+</body>
+</html>
