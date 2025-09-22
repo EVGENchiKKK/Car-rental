@@ -447,6 +447,17 @@
     <div class="content-section">
         <div class="container">
             <!-- Auth required message -->
+            <!-- <div id="authRequired" class="text-center" style="display: none;">
+                <div class="card" style="max-width: 500px; margin: 0 auto; padding: 3rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">⚠️</div>
+                    <h2>Требуется авторизация</h2>
+                    <p style="margin: 1rem 0; color: #6b7280;">Для оформления бронирования необходимо войти в систему</p>
+                    <div style="display: flex; gap: 1rem; justify-content: center;">
+                        <a href="login.html" class="btn btn-primary">Войти</a>
+                        <a href="register.html" class="btn btn-outline">Регистрация</a>
+                    </div>
+                </div>
+            </div> -->
 
             <!-- Booking content -->
             <div id="bookingContent" style="display: none;">
@@ -761,7 +772,7 @@
 
         // Check authentication
         function checkAuth() {
-            const userData = localStorage.getItem('currentUser');
+            const userData = true;
             if (userData) {
                 currentUser = JSON.parse(userData);
                 document.getElementById('userMenu').innerHTML = `
@@ -769,7 +780,13 @@
                     <a href="#" onclick="logout()" class="btn btn-outline">Выйти</a>
                 `;
                 document.getElementById('bookingContent').style.display = 'block';
-            } 
+            } else {
+                document.getElementById('userMenu').innerHTML = `
+                    <a href="login.html" class="btn btn-outline">Войти</a>
+                    <a href="register.html" class="btn btn-primary">Регистрация</a>
+                `;
+                document.getElementById('authRequired').style.display = 'block';
+            }
         }
 
         function logout() {
