@@ -6,6 +6,406 @@
     <title>Бронирование - AutoRent</title>
     <link rel="stylesheet" href="styles.css">
     <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🚗</text></svg>">
+    <style>
+        /* Дополнительные стили для страницы бронирования */
+        .booking-container {
+            display: grid;
+            grid-template-columns: 1fr 400px;
+            gap: 2rem;
+            align-items: start;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .tariff-selector {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tariff-selector::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            left: -50%;
+            width: 200%;
+            height: 200%;
+            background: linear-gradient(45deg, transparent, rgba(14, 165, 233, 0.1), transparent);
+            animation: shimmer 3s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%) translateY(-100%) rotate(45deg); }
+            100% { transform: translateX(100%) translateY(100%) rotate(45deg); }
+        }
+
+        .tariff-options {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .tariff-option {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            text-align: center;
+            position: relative;
+        }
+
+        .tariff-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(0,0,0,0.1);
+        }
+
+        .tariff-option.active {
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            transform: scale(1.05);
+        }
+
+        .tariff-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: #3b82f6;
+            color: white;
+            font-size: 0.7rem;
+            padding: 0.25rem 0.5rem;
+            border-radius: 12px;
+        }
+
+        .available-cars {
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            overflow: hidden;
+            margin-bottom: 2rem;
+        }
+
+        .car-item {
+            background: white;
+            border-bottom: 1px solid #e2e8f0;
+            padding: 1.5rem;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .car-item:last-child {
+            border-bottom: none;
+        }
+
+        .car-item:hover {
+            background: #f8fafc;
+            transform: translateX(5px);
+        }
+
+        .car-item.selected {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border-left: 4px solid #10b981;
+        }
+
+        .car-details {
+            display: grid;
+            grid-template-columns: 80px 1fr auto;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .car-image {
+            width: 80px;
+            height: 60px;
+            background: #f1f5f9;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border: 2px solid #e2e8f0;
+        }
+
+        .car-info h4 {
+            margin: 0 0 0.5rem 0;
+            color: #1e293b;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .car-id {
+            background: #f1f5f9;
+            color: #64748b;
+            font-size: 0.7rem;
+            padding: 0.2rem 0.5rem;
+            border-radius: 4px;
+            font-weight: normal;
+        }
+
+        .car-meta {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+            font-size: 0.9rem;
+            color: #64748b;
+        }
+
+        .car-price {
+            color: #059669;
+            font-weight: 600;
+            font-size: 1.1rem;
+        }
+
+        .select-btn {
+            background: #3b82f6;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .select-btn:hover {
+            background: #2563eb;
+            transform: scale(1.05);
+        }
+
+        .select-btn.selected {
+            background: #10b981;
+        }
+
+        .selected-cars {
+            background: white;
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .selected-car-item {
+            background: linear-gradient(135deg, #f0fdf4 0%, #dcfce7 100%);
+            border: 1px solid #10b981;
+            border-radius: 8px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            position: relative;
+        }
+
+        .selected-car-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 0.5rem;
+            right: 0.5rem;
+            background: #ef4444;
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 24px;
+            height: 24px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.8rem;
+        }
+
+        .booking-summary {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 12px;
+            padding: 2rem;
+            position: sticky;
+            top: 100px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .pricing-animation {
+            animation: pulse 2s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.02); }
+        }
+
+        .discount-visualization {
+            background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+            border: 2px solid #10b981;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1rem 0;
+            position: relative;
+        }
+
+        .discount-steps {
+            display: grid;
+            gap: 0.5rem;
+            font-size: 0.85rem;
+            margin-top: 1rem;
+        }
+
+        .discount-step {
+            display: flex;
+            justify-content: space-between;
+            padding: 0.5rem;
+            background: white;
+            border-radius: 6px;
+            border: 1px solid #10b981;
+        }
+
+        .discount-step.active {
+            background: #10b981;
+            color: white;
+            font-weight: 600;
+        }
+
+        .client-data {
+            background: linear-gradient(135deg, #fefce8 0%, #fef3c7 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .client-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .client-field {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .client-field label {
+            font-size: 0.85rem;
+            color: #92400e;
+            margin-bottom: 0.25rem;
+        }
+
+        .client-field .value {
+            font-weight: 600;
+            color: #1e293b;
+        }
+
+        .card-selector {
+            background: linear-gradient(135deg, #f0f9ff 0%, #e0f2fe 100%);
+            border: 2px solid #0ea5e9;
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .card-options {
+            display: grid;
+            gap: 1rem;
+            margin-top: 1rem;
+        }
+
+        .card-option {
+            background: white;
+            border: 2px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .card-option:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(0,0,0,0.1);
+        }
+
+        .card-option.selected {
+            border-color: #3b82f6;
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+        }
+
+        .card-icon {
+            width: 40px;
+            height: 28px;
+            background: linear-gradient(135deg, #3b82f6 0%, #1d4ed8 100%);
+            border-radius: 4px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 0.7rem;
+            font-weight: 600;
+        }
+
+        .multiple-booking-info {
+            background: linear-gradient(135deg, #fef3c7 0%, #fed7aa 100%);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            text-align: center;
+        }
+
+        .booking-button {
+            background: linear-gradient(135deg, #10b981 0%, #3b82f6 100%);
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            width: 100%;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 12px rgba(16, 185, 129, 0.3);
+        }
+
+        .booking-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4);
+        }
+
+        .booking-button:disabled {
+            background: #9ca3af;
+            cursor: not-allowed;
+            transform: none;
+            box-shadow: none;
+        }
+
+        @media (max-width: 768px) {
+            .booking-container {
+                grid-template-columns: 1fr;
+                gap: 1rem;
+            }
+            
+            .booking-summary {
+                position: static;
+            }
+            
+            .tariff-options {
+                grid-template-columns: 1fr;
+            }
+            
+            .client-row {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
 </head>
 <body>
     <!-- Header -->
@@ -39,8 +439,8 @@
     <!-- Page Header -->
     <section class="page-header">
         <div class="container">
-            <h1 class="page-title">Бронирование автомобиля</h1>
-            <p class="page-subtitle">Оформите аренду быстро и удобно</p>
+            <h1 class="page-title">Бронирование автомобилей</h1>
+            <p class="page-subtitle">Выберите автомобили и оформите бронирование</p>
         </div>
     </section>
 
@@ -49,8 +449,9 @@
             <!-- Auth required message -->
             <div id="authRequired" class="text-center" style="display: none;">
                 <div class="card" style="max-width: 500px; margin: 0 auto; padding: 3rem;">
+                    <div style="font-size: 4rem; margin-bottom: 1rem;">⚠️</div>
                     <h2>Требуется авторизация</h2>
-                    <p style="margin: 1rem 0; color: #6b7280;">Для оформления бронирования необходимо войти в аккаунт</p>
+                    <p style="margin: 1rem 0; color: #6b7280;">Для оформления бронирования необходимо войти в систему</p>
                     <div style="display: flex; gap: 1rem; justify-content: center;">
                         <a href="login.html" class="btn btn-primary">Войти</a>
                         <a href="register.html" class="btn btn-outline">Регистрация</a>
@@ -58,160 +459,209 @@
                 </div>
             </div>
 
-            <!-- Booking form -->
+            <!-- Booking content -->
             <div id="bookingContent" style="display: none;">
-                <div style="display: grid; grid-template-columns: 1fr 400px; gap: 2rem; align-items: start;">
-                    
-                    <!-- Main form -->
-                    <div class="card" style="padding: 2rem;">
-                        <h2 style="margin-bottom: 2rem;">Детали бронирования</h2>
-                        
-                        <form id="bookingForm">
-                            <!-- Car Selection -->
-                            <div class="form-field">
-                                <label>Выбранный автомобиль</label>
-                                <div id="selectedCarDisplay" class="card" style="padding: 1rem; background: #f8fafc; margin-bottom: 1rem;">
-                                    <div style="display: flex; align-items: center; gap: 1rem;">
-                                        <img id="carImage" src="" alt="" style="width: 80px; height: 60px; object-fit: cover; border-radius: 8px;">
-                                        <div>
-                                            <h4 id="carName"></h4>
-                                            <p id="carPrice" style="color: #3b82f6; font-weight: 600; margin: 0;"></p>
-                                        </div>
+                <div class="booking-container">
+                    <!-- Main content -->
+                    <div>
+                        <!-- Tariff Selection -->
+                        <div class="tariff-selector">
+                            <h3 style="margin: 0 0 0.5rem 0; display: flex; align-items: center; gap: 0.5rem;">
+                                ⚙️ Выбор тарифа
+                                <button id="changeTariffBtn" style="background: #3b82f6; color: white; border: none; padding: 0.25rem 0.5rem; border-radius: 4px; font-size: 0.8rem; cursor: pointer;">
+                                    Изменить
+                                </button>
+                            </h3>
+                            <p style="margin: 0; color: #64748b; position: relative; z-index: 1;">
+                                Текущий тариф: <strong id="currentTariffName">Стандартный</strong>
+                            </p>
+                            
+                            <div id="tariffOptions" class="tariff-options" style="display: none;">
+                                <div class="tariff-option active" data-tariff="standard" data-multiplier="1">
+                                    <h4 style="margin: 0 0 0.5rem 0;">Стандартный</h4>
+                                    <p style="margin: 0; font-size: 0.85rem; color: #64748b;">Обычные цены</p>
+                                    <div class="tariff-badge">×1.0</div>
+                                </div>
+                                <div class="tariff-option" data-tariff="premium" data-multiplier="1.3">
+                                    <h4 style="margin: 0 0 0.5rem 0;">Премиум</h4>
+                                    <p style="margin: 0; font-size: 0.85rem; color: #64748b;">Доп. услуги</p>
+                                    <div class="tariff-badge">×1.3</div>
+                                </div>
+                                <div class="tariff-option" data-tariff="luxury" data-multiplier="1.8">
+                                    <h4 style="margin: 0 0 0.5rem 0;">Люкс</h4>
+                                    <p style="margin: 0; font-size: 0.85rem; color: #64748b;">VIP обслуживание</p>
+                                    <div class="tariff-badge">×1.8</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Available Cars -->
+                        <div class="available-cars">
+                            <h3 style="background: #f8fafc; padding: 1rem; margin: 0; border-bottom: 1px solid #e2e8f0;">
+                                🚗 Доступные автомобили <span id="availableCount" style="background: #3b82f6; color: white; padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.8rem;">5</span>
+                            </h3>
+                            <div id="availableCarsList">
+                                <!-- Cars will be populated by JS -->
+                            </div>
+                        </div>
+
+                        <!-- Selected Cars -->
+                        <div class="selected-cars">
+                            <h3 style="margin: 0 0 1rem 0; display: flex; align-items: center; justify-content: space-between;">
+                                ✅ Выбранные автомобили 
+                                <span id="selectedCount" style="background: #10b981; color: white; padding: 0.2rem 0.5rem; border-radius: 12px; font-size: 0.8rem;">0</span>
+                            </h3>
+                            <div id="selectedCarsList">
+                                <div style="text-center; padding: 2rem; color: #64748b;">
+                                    <div style="font-size: 3rem; margin-bottom: 1rem;">🚗</div>
+                                    <p>Автомобили не выбраны</p>
+                                    <p style="font-size: 0.9rem;">Выберите автомобили из списка доступных</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Booking Details Form -->
+                        <div class="card" style="padding: 2rem;">
+                            <h3 style="margin: 0 0 1.5rem 0;">📅 Детали бронирования</h3>
+                            
+                            <form id="bookingForm">
+                                <!-- Date Selection -->
+                                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1.5rem;">
+                                    <div class="form-field">
+                                        <label for="startDate">📅 Дата бронирования (начало)</label>
+                                        <input type="date" id="startDate" name="startDate" class="form-input" required>
+                                        <div class="error-message" id="startDateError"></div>
+                                    </div>
+
+                                    <div class="form-field">
+                                        <label for="endDate">📅 Дата возврата (окончание)</label>
+                                        <input type="date" id="endDate" name="endDate" class="form-input" required>
+                                        <div class="error-message" id="endDateError"></div>
                                     </div>
                                 </div>
-                                <a href="cars.html" class="btn btn-outline">Изменить автомобиль</a>
-                            </div>
 
-                            <!-- Date Selection -->
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                <div class="form-field">
-                                    <label for="startDate">📅 Дата начала</label>
-                                    <input type="date" id="startDate" name="startDate" required>
-                                    <div class="error-message" id="startDateError"></div>
+                                <!-- Period Info -->
+                                <div id="periodInfo" style="background: #f0f9ff; border: 1px solid #0ea5e9; border-radius: 8px; padding: 1rem; margin-bottom: 1.5rem; display: none;">
+                                    <p style="margin: 0; color: #0369a1;">
+                                        ℹ️ Период аренды: <strong id="periodDays">0 дней</strong>
+                                    </p>
                                 </div>
 
-                                <div class="form-field">
-                                    <label for="endDate">📅 Дата окончания</label>
-                                    <input type="date" id="endDate" name="endDate" required>
-                                    <div class="error-message" id="endDateError"></div>
-                                </div>
-                            </div>
-
-                            <!-- Time Selection -->
-                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 1rem;">
-                                <div class="form-field">
-                                    <label for="startTime">⏰ Время получения</label>
-                                    <select id="startTime" name="startTime" class="form-select" required>
-                                        <option value="">Выберите время</option>
-                                        <option value="09:00">09:00</option>
-                                        <option value="10:00">10:00</option>
-                                        <option value="11:00">11:00</option>
-                                        <option value="12:00">12:00</option>
-                                        <option value="13:00">13:00</option>
-                                        <option value="14:00">14:00</option>
-                                        <option value="15:00">15:00</option>
-                                        <option value="16:00">16:00</option>
-                                        <option value="17:00">17:00</option>
-                                        <option value="18:00">18:00</option>
+                                <!-- Branch Selection -->
+                                <div class="form-field" style="margin-bottom: 1.5rem;">
+                                    <label for="branch">🏢 Филиал получения</label>
+                                    <select id="branch" name="branch" class="form-input" required>
+                                        <option value="">Выберите филиал</option>
+                                        <option value="center">Центральный филиал - ул. Тверская, 10</option>
+                                        <option value="north">Северный филиал - ул. Ленинградская, 25</option>
+                                        <option value="east">Восточный филиал - ул. Измайловская, 15</option>
+                                        <option value="west">Западный филиал - ул. Кутузовская, 8</option>
+                                        <option value="south">Южный филиал - ул. Варшавская, 33</option>
                                     </select>
                                 </div>
-
-                                <div class="form-field">
-                                    <label for="endTime">⏰ Время возврата</label>
-                                    <select id="endTime" name="endTime" class="form-select" required>
-                                        <option value="">Выберите время</option>
-                                        <option value="09:00">09:00</option>
-                                        <option value="10:00">10:00</option>
-                                        <option value="11:00">11:00</option>
-                                        <option value="12:00">12:00</option>
-                                        <option value="13:00">13:00</option>
-                                        <option value="14:00">14:00</option>
-                                        <option value="15:00">15:00</option>
-                                        <option value="16:00">16:00</option>
-                                        <option value="17:00">17:00</option>
-                                        <option value="18:00">18:00</option>
-                                    </select>
-                                </div>
-                            </div>
-
-                            <!-- Branch Selection -->
-                            <div class="form-field">
-                                <label for="branch">🏢 Филиал получения</label>
-                                <select id="branch" name="branch" class="form-select" required>
-                                    <option value="">Выберите филиал</option>
-                                    <option value="center">Центральный офис - ул. Тверская, 10</option>
-                                    <option value="airport">Аэропорт Домодедово - Терминал А</option>
-                                    <option value="metro">У метро Парк Культуры - ул. Соколова, 5</option>
-                                    <option value="mall">ТЦ Европейский - Площадь Киевского Вокзала, 2</option>
-                                    <option value="business">Бизнес-центр Белая Площадь - ул. Бутырская, 76</option>
-                                </select>
-                            </div>
-
-                            <!-- Additional Services -->
-                            <div class="form-field">
-                                <label>Дополнительные услуги</label>
-                                <div style="display: grid; gap: 0.5rem; margin-top: 0.5rem;">
-                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                        <input type="checkbox" name="services" value="gps" data-price="300">
-                                        GPS-навигатор (+300 ₽/день)
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                        <input type="checkbox" name="services" value="child-seat" data-price="500">
-                                        Детское кресло (+500 ₽/день)
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                        <input type="checkbox" name="services" value="wifi" data-price="200">
-                                        Wi-Fi роутер (+200 ₽/день)
-                                    </label>
-                                    <label style="display: flex; align-items: center; gap: 0.5rem; cursor: pointer;">
-                                        <input type="checkbox" name="services" value="driver" data-price="2000">
-                                        Личный водитель (+2000 ₽/день)
-                                    </label>
-                                </div>
-                            </div>
-
-                            <!-- Comments -->
-                            <div class="form-field">
-                                <label for="comments">💬 Комментарии (необязательно)</label>
-                                <textarea id="comments" name="comments" rows="3" class="form-input" placeholder="Дополнительные пожелания или комментарии"></textarea>
-                            </div>
-                        </form>
+                            </form>
+                        </div>
                     </div>
 
-                    <!-- Booking Summary -->
-                    <div class="card" style="padding: 2rem; position: sticky; top: 100px;">
-                        <h3 style="margin-bottom: 1.5rem;">Итоговая стоимость</h3>
-                        
-                        <div id="costBreakdown">
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
-                                <span>Аренда автомобиля:</span>
-                                <span id="baseCost">0 ₽</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;" id="servicesRow" style="display: none;">
-                                <span>Дополнительные услуги:</span>
-                                <span id="servicesCost">0 ₽</span>
-                            </div>
-                            <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; color: #10b981;" id="discountRow" style="display: none;">
-                                <span>Скидка за длительность:</span>
-                                <span id="discountAmount">-0 ₽</span>
-                            </div>
-                            <hr style="margin: 1rem 0;">
-                            <div style="display: flex; justify-content: space-between; font-weight: 700; font-size: 1.25rem;">
-                                <span>Итого:</span>
-                                <span id="totalCost">0 ₽</span>
+                    <!-- Sidebar -->
+                    <div>
+                        <!-- Client Data -->
+                        <div class="client-data">
+                            <h3 style="margin: 0 0 1rem 0; color: #92400e;">👤 Данные клиента</h3>
+                            <div id="clientDataContent">
+                                <!-- Will be populated by JS -->
                             </div>
                         </div>
 
-                        <div id="discountInfo" style="background: #ecfdf5; padding: 1rem; border-radius: 8px; margin: 1rem 0; display: none;">
-                            <p style="color: #065f46; margin: 0; font-size: 0.9rem;">
-                                💰 <strong>Система скидок:</strong><br>
-                                5% за каждые 3 дня аренды (макс. 25%)
-                            </p>
+                        <!-- Card Selection -->
+                        <div class="card-selector">
+                            <h3 style="margin: 0 0 0.5rem 0;">💳 Банковская карта для оплаты</h3>
+                            <p style="margin: 0; color: #0369a1; font-size: 0.9rem;">Выберите карту для завершения бронирования</p>
+                            <div id="cardOptions" class="card-options">
+                                <!-- Will be populated by JS -->
+                            </div>
                         </div>
 
-                        <button type="submit" form="bookingForm" class="btn btn-primary" style="width: 100%; margin-top: 1rem;" id="bookingBtn">
-                            Забронировать
-                        </button>
+                        <!-- Pricing Summary -->
+                        <div class="booking-summary">
+                            <h3 style="margin: 0 0 1rem 0; color: #059669;">💰 Финальная стоимость</h3>
+                            
+                            <div id="pricingBreakdown">
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem;">
+                                    <span>Базовая стоимость:</span>
+                                    <span id="baseCost">0 ₽</span>
+                                </div>
+                                <div id="tariffRow" style="display: none; flex-direction: row; justify-content: space-between; margin-bottom: 0.5rem; color: #3b82f6;">
+                                    <span>Тариф:</span>
+                                    <span id="tariffCost">×1.0</span>
+                                </div>
+                                <div style="display: flex; justify-content: space-between; margin-bottom: 0.5rem; font-weight: 600;">
+                                    <span>Стоимость с тарифом:</span>
+                                    <span id="subtotalCost">0 ₽</span>
+                                </div>
+                                <div id="discountRow" style="display: none; flex-direction: row; justify-content: space-between; margin-bottom: 0.5rem; color: #10b981;">
+                                    <span>Скидка за длительность:</span>
+                                    <span id="discountAmount">0 ₽</span>
+                                </div>
+                                <hr style="margin: 1rem 0; border: 1px solid #e2e8f0;">
+                                <div style="display: flex; justify-content: space-between; font-size: 1.25rem; font-weight: 700; color: #059669;" class="pricing-animation">
+                                    <span>Итого к оплате:</span>
+                                    <span id="totalCost">0 ₽</span>
+                                </div>
+                            </div>
+
+                            <!-- Discount Visualization -->
+                            <div id="discountVisualization" class="discount-visualization" style="display: none;">
+                                <h4 style="margin: 0 0 0.5rem 0; color: #059669;">🎯 Система скидок</h4>
+                                <p style="margin: 0 0 1rem 0; font-size: 0.9rem; color: #065f46;">
+                                    Действует скидка <strong id="currentDiscount">0%</strong>!
+                                </p>
+                                <div class="discount-steps">
+                                    <div class="discount-step" data-days="3">
+                                        <span>3-5 дней</span>
+                                        <span>5% скидка</span>
+                                    </div>
+                                    <div class="discount-step" data-days="6">
+                                        <span>6-8 дней</span>
+                                        <span>10% скидка</span>
+                                    </div>
+                                    <div class="discount-step" data-days="9">
+                                        <span>9-11 дней</span>
+                                        <span>15% скидка</span>
+                                    </div>
+                                    <div class="discount-step" data-days="12">
+                                        <span>12-14 дней</span>
+                                        <span>20% скидка</span>
+                                    </div>
+                                    <div class="discount-step" data-days="15">
+                                        <span>15+ дней</span>
+                                        <span>25% скидка (макс.)</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Multiple Booking Info -->
+                            <div id="multipleBookingInfo" class="multiple-booking-info" style="display: none;">
+                                <p style="margin: 0; color: #92400e;">
+                                    🚗 Вы бронируете <strong id="multipleCount">0</strong> автомобилей одновременно
+                                </p>
+                            </div>
+
+                            <!-- Quick Actions -->
+                            <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 0.5rem; margin: 1rem 0;">
+                                <a href="cars.html" class="btn btn-outline" style="text-align: center; font-size: 0.9rem;">
+                                    🚗 Еще авто
+                                </a>
+                                <a href="cards.html" class="btn btn-outline" style="text-align: center; font-size: 0.9rem;">
+                                    💳 Карты
+                                </a>
+                            </div>
+
+                            <!-- Booking Button -->
+                            <button type="submit" form="bookingForm" class="booking-button" id="bookingBtn" disabled>
+                                Выберите автомобили
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -248,12 +698,80 @@
     </footer>
 
     <script>
+        // Global variables
         let currentUser = null;
-        let selectedCar = null;
+        let selectedCars = [];
+        let currentTariff = 'standard';
+        let selectedCard = null;
+        let availableCars = [
+            {
+                id: 'CAR001',
+                brand: 'Toyota',
+                model: 'Camry',
+                plateNumber: 'А123БВ777',
+                pricePerDay: 3500,
+                branch: 'Центральный филиал',
+                image: '🚗'
+            },
+            {
+                id: 'CAR002', 
+                brand: 'BMW',
+                model: '5 Series',
+                plateNumber: 'В456ГД777',
+                pricePerDay: 8500,
+                branch: 'Северный филиал',
+                image: '🚘'
+            },
+            {
+                id: 'CAR003',
+                brand: 'Mercedes-Benz',
+                model: 'C-Class',
+                plateNumber: 'С789ЕЖ777',
+                pricePerDay: 9500,
+                branch: 'Восточный филиал',
+                image: '🚙'
+            },
+            {
+                id: 'CAR004',
+                brand: 'Audi',
+                model: 'A4',
+                plateNumber: 'Е012ЗИ777',
+                pricePerDay: 7500,
+                branch: 'Западный филиал',
+                image: '🚗'
+            },
+            {
+                id: 'CAR005',
+                brand: 'Volkswagen',
+                model: 'Passat',
+                plateNumber: 'К345ЛМ777',
+                pricePerDay: 4500,
+                branch: 'Южный филиал',
+                image: '🚘'
+            }
+        ];
 
-        // Check authentication and initialize
+        const tariffs = {
+            standard: { name: 'Стандартный', multiplier: 1, description: 'Обычные цены' },
+            premium: { name: 'Премиум', multiplier: 1.3, description: 'Дополнительные услуги' },
+            luxury: { name: 'Люкс', multiplier: 1.8, description: 'VIP обслуживание' }
+        };
+
+        // Initialize page
         function init() {
-            // Check auth
+            checkAuth();
+            if (currentUser) {
+                displayAvailableCars();
+                displayClientData();
+                displayUserCards();
+                setupEventListeners();
+                setMinDates();
+                updatePricing();
+            }
+        }
+
+        // Check authentication
+        function checkAuth() {
             const userData = localStorage.getItem('currentUser');
             if (userData) {
                 currentUser = JSON.parse(userData);
@@ -261,17 +779,7 @@
                     <a href="profile.html" class="nav-item">👤 ${currentUser.firstName}</a>
                     <a href="#" onclick="logout()" class="btn btn-outline">Выйти</a>
                 `;
-                
-                // Load selected car
-                const carData = localStorage.getItem('selectedCar');
-                if (carData) {
-                    selectedCar = JSON.parse(carData);
-                    displaySelectedCar();
-                    document.getElementById('bookingContent').style.display = 'block';
-                } else {
-                    // No car selected, redirect to cars page
-                    window.location.href = 'cars.html';
-                }
+                document.getElementById('bookingContent').style.display = 'block';
             } else {
                 document.getElementById('userMenu').innerHTML = `
                     <a href="login.html" class="btn btn-outline">Войти</a>
@@ -286,65 +794,334 @@
             window.location.href = 'index.html';
         }
 
-        function displaySelectedCar() {
-            document.getElementById('carImage').src = selectedCar.image;
-            document.getElementById('carImage').alt = selectedCar.name;
-            document.getElementById('carName').textContent = selectedCar.name;
-            document.getElementById('carPrice').textContent = `${selectedCar.price} ₽/день`;
+        // Display available cars
+        function displayAvailableCars() {
+            const container = document.getElementById('availableCarsList');
+            container.innerHTML = availableCars.map(car => `
+                <div class="car-item" id="car-${car.id}">
+                    <div class="car-details">
+                        <div class="car-image">${car.image}</div>
+                        <div class="car-info">
+                            <h4>
+                                ${car.brand} ${car.model}
+                                <span class="car-id">ID: ${car.id}</span>
+                            </h4>
+                            <div class="car-meta">
+                                <div>📋 Номер: ${car.plateNumber}</div>
+                                <div>🏢 ${car.branch}</div>
+                            </div>
+                            <div class="car-price" id="price-${car.id}">
+                                ${(car.pricePerDay * tariffs[currentTariff].multiplier).toLocaleString()} ₽/день
+                            </div>
+                        </div>
+                        <button class="select-btn" onclick="toggleCar('${car.id}')">
+                            <span id="btn-text-${car.id}">+ Добавить</span>
+                        </button>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        // Calculate total cost
-        function calculateCost() {
+        // Toggle car selection
+        function toggleCar(carId) {
+            const car = availableCars.find(c => c.id === carId);
+            const existingIndex = selectedCars.findIndex(c => c.id === carId);
+            
+            if (existingIndex === -1) {
+                selectedCars.push(car);
+                document.getElementById(`car-${carId}`).classList.add('selected');
+                document.getElementById(`btn-text-${carId}`).innerHTML = '✓ Добавлен';
+                document.querySelector(`#car-${carId} .select-btn`).classList.add('selected');
+            } else {
+                selectedCars.splice(existingIndex, 1);
+                document.getElementById(`car-${carId}`).classList.remove('selected');
+                document.getElementById(`btn-text-${carId}`).innerHTML = '+ Добавить';
+                document.querySelector(`#car-${carId} .select-btn`).classList.remove('selected');
+            }
+            
+            updateSelectedCars();
+            updatePricing();
+        }
+
+        // Update selected cars display
+        function updateSelectedCars() {
+            const container = document.getElementById('selectedCarsList');
+            const countElement = document.getElementById('selectedCount');
+            
+            countElement.textContent = selectedCars.length;
+            
+            if (selectedCars.length === 0) {
+                container.innerHTML = `
+                    <div style="text-center; padding: 2rem; color: #64748b;">
+                        <div style="font-size: 3rem; margin-bottom: 1rem;">🚗</div>
+                        <p>Автомобили не выбраны</p>
+                        <p style="font-size: 0.9rem;">Выберите автомобили из списка доступных</p>
+                    </div>
+                `;
+            } else {
+                container.innerHTML = selectedCars.map(car => `
+                    <div class="selected-car-item">
+                        <button class="remove-btn" onclick="toggleCar('${car.id}')">×</button>
+                        <div style="display: flex; align-items: center; gap: 1rem;">
+                            <div style="font-size: 1.5rem;">${car.image}</div>
+                            <div style="flex: 1;">
+                                <h4 style="margin: 0 0 0.5rem 0; display: flex; align-items: center; gap: 0.5rem;">
+                                    ${car.brand} ${car.model}
+                                    <span style="background: #f1f5f9; color: #64748b; font-size: 0.7rem; padding: 0.2rem 0.5rem; border-radius: 4px; font-weight: normal;">ID: ${car.id}</span>
+                                </h4>
+                                <div style="font-size: 0.9rem; color: #64748b; margin-bottom: 0.5rem;">
+                                    📋 ${car.plateNumber} • 🏢 ${car.branch}
+                                </div>
+                                <div style="color: #059669; font-weight: 600;">
+                                    ${(car.pricePerDay * tariffs[currentTariff].multiplier).toLocaleString()} ₽/день
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                `).join('');
+            }
+            
+            // Update multiple booking info
+            const multipleInfo = document.getElementById('multipleBookingInfo');
+            if (selectedCars.length > 1) {
+                multipleInfo.style.display = 'block';
+                document.getElementById('multipleCount').textContent = selectedCars.length;
+            } else {
+                multipleInfo.style.display = 'none';
+            }
+        }
+
+        // Display client data
+        function displayClientData() {
+            const container = document.getElementById('clientDataContent');
+            container.innerHTML = `
+                <div class="client-row">
+                    <div class="client-field">
+                        <label>Фамилия</label>
+                        <div class="value">${currentUser.lastName}</div>
+                    </div>
+                    <div class="client-field">
+                        <label>Имя</label>
+                        <div class="value">${currentUser.firstName}</div>
+                    </div>
+                </div>
+                <div class="client-field" style="margin-bottom: 1rem;">
+                    <label>Отчество</label>
+                    <div class="value">${currentUser.middleName}</div>
+                </div>
+                <div class="client-row">
+                    <div class="client-field">
+                        <label>Номер телефона</label>
+                        <div class="value">${currentUser.phone}</div>
+                    </div>
+                    <div class="client-field">
+                        <label>Дата рождения</label>
+                        <div class="value">${new Date(currentUser.birthDate).toLocaleDateString('ru-RU')}</div>
+                    </div>
+                </div>
+                <div class="client-field">
+                    <label>Паспортные данные</label>
+                    <div class="value">${currentUser.passport}</div>
+                </div>
+            `;
+        }
+
+        // Display user cards
+        function displayUserCards() {
+            const container = document.getElementById('cardOptions');
+            const userCards = [
+                { id: '1', number: '1111 **** **** 1234', type: 'Visa', lastFour: '1234' },
+                { id: '2', number: '2222 **** **** 5678', type: 'MasterCard', lastFour: '5678' }
+            ];
+            
+            container.innerHTML = userCards.map(card => `
+                <div class="card-option" onclick="selectCard('${card.id}', '${card.type}', '${card.lastFour}')" id="card-${card.id}">
+                    <div class="card-icon">${card.type === 'Visa' ? 'VISA' : 'MC'}</div>
+                    <div>
+                        <div style="font-weight: 600;">${card.type}</div>
+                        <div style="color: #64748b; font-size: 0.9rem;">•••• ${card.lastFour}</div>
+                    </div>
+                </div>
+            `).join('');
+        }
+
+        // Select card
+        function selectCard(cardId, type, lastFour) {
+            // Remove previous selection
+            document.querySelectorAll('.card-option').forEach(el => el.classList.remove('selected'));
+            
+            // Add selection to clicked card
+            document.getElementById(`card-${cardId}`).classList.add('selected');
+            
+            selectedCard = { id: cardId, type, lastFour };
+            updateBookingButton();
+        }
+
+        // Setup event listeners
+        function setupEventListeners() {
+            // Tariff change button
+            document.getElementById('changeTariffBtn').addEventListener('click', toggleTariffOptions);
+            
+            // Tariff options
+            document.querySelectorAll('.tariff-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    const tariff = this.dataset.tariff;
+                    const multiplier = parseFloat(this.dataset.multiplier);
+                    
+                    // Update active tariff
+                    document.querySelectorAll('.tariff-option').forEach(el => el.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    currentTariff = tariff;
+                    document.getElementById('currentTariffName').textContent = tariffs[tariff].name;
+                    
+                    // Update car prices
+                    availableCars.forEach(car => {
+                        document.getElementById(`price-${car.id}`).textContent = 
+                            `${(car.pricePerDay * multiplier).toLocaleString()} ₽/день`;
+                    });
+                    
+                    updateSelectedCars();
+                    updatePricing();
+                    
+                    // Hide options
+                    document.getElementById('tariffOptions').style.display = 'none';
+                });
+            });
+            
+            // Date changes
+            document.getElementById('startDate').addEventListener('change', updatePricing);
+            document.getElementById('endDate').addEventListener('change', updatePricing);
+            
+            // Form submission
+            document.getElementById('bookingForm').addEventListener('submit', handleBooking);
+        }
+
+        // Toggle tariff options
+        function toggleTariffOptions() {
+            const options = document.getElementById('tariffOptions');
+            options.style.display = options.style.display === 'grid' ? 'none' : 'grid';
+        }
+
+        // Calculate days between dates
+        function calculateDays() {
             const startDate = document.getElementById('startDate').value;
             const endDate = document.getElementById('endDate').value;
             
-            if (!startDate || !endDate || !selectedCar) return;
+            if (!startDate || !endDate) return 0;
             
             const start = new Date(startDate);
             const end = new Date(endDate);
-            const days = Math.ceil((end - start) / (1000 * 60 * 60 * 24));
+            const diffTime = Math.abs(end.getTime() - start.getTime());
+            return Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+        }
+
+        // Calculate discount
+        function calculateDiscount(days) {
+            if (days >= 15) return 25;
+            if (days >= 12) return 20;
+            if (days >= 9) return 15;
+            if (days >= 6) return 10;
+            if (days >= 3) return 5;
+            return 0;
+        }
+
+        // Update pricing
+        function updatePricing() {
+            const days = calculateDays();
             
-            if (days <= 0) return;
+            // Update period info
+            const periodInfo = document.getElementById('periodInfo');
+            if (days > 0) {
+                periodInfo.style.display = 'block';
+                document.getElementById('periodDays').textContent = `${days} дней`;
+            } else {
+                periodInfo.style.display = 'none';
+            }
             
-            // Base cost
-            const baseCost = selectedCar.price * days;
+            if (selectedCars.length === 0 || days === 0) {
+                document.getElementById('baseCost').textContent = '0 ₽';
+                document.getElementById('subtotalCost').textContent = '0 ₽';
+                document.getElementById('totalCost').textContent = '0 ₽';
+                document.getElementById('discountRow').style.display = 'none';
+                document.getElementById('discountVisualization').style.display = 'none';
+                updateBookingButton();
+                return;
+            }
             
-            // Additional services
-            const services = document.querySelectorAll('input[name="services"]:checked');
-            let servicesCost = 0;
-            services.forEach(service => {
-                servicesCost += parseInt(service.dataset.price) * days;
-            });
+            // Calculate costs
+            const baseCost = selectedCars.reduce((sum, car) => sum + car.pricePerDay * days, 0);
+            const tariffMultiplier = tariffs[currentTariff].multiplier;
+            const subtotal = baseCost * tariffMultiplier;
+            const discount = calculateDiscount(days);
+            const discountAmount = Math.floor(subtotal * discount / 100);
+            const total = subtotal - discountAmount;
             
-            // Calculate discount (5% for every 3 days, max 25%)
-            const discountPercentage = Math.min(Math.floor(days / 3) * 5, 25);
-            const discountAmount = Math.floor((baseCost + servicesCost) * discountPercentage / 100);
-            
-            const totalCost = baseCost + servicesCost - discountAmount;
-            
-            // Update UI
+            // Update display
             document.getElementById('baseCost').textContent = `${baseCost.toLocaleString()} ₽`;
             
-            const servicesRow = document.getElementById('servicesRow');
-            if (servicesCost > 0) {
-                servicesRow.style.display = 'flex';
-                document.getElementById('servicesCost').textContent = `${servicesCost.toLocaleString()} ₽`;
+            const tariffRow = document.getElementById('tariffRow');
+            if (tariffMultiplier !== 1) {
+                tariffRow.style.display = 'flex';
+                document.getElementById('tariffCost').textContent = `×${tariffMultiplier}`;
             } else {
-                servicesRow.style.display = 'none';
+                tariffRow.style.display = 'none';
             }
+            
+            document.getElementById('subtotalCost').textContent = `${subtotal.toLocaleString()} ₽`;
             
             const discountRow = document.getElementById('discountRow');
-            const discountInfo = document.getElementById('discountInfo');
-            if (discountAmount > 0) {
+            const discountViz = document.getElementById('discountVisualization');
+            
+            if (discount > 0) {
                 discountRow.style.display = 'flex';
-                discountInfo.style.display = 'block';
+                discountViz.style.display = 'block';
                 document.getElementById('discountAmount').textContent = `-${discountAmount.toLocaleString()} ₽`;
+                document.getElementById('currentDiscount').textContent = `${discount}%`;
+                
+                // Update discount steps
+                document.querySelectorAll('.discount-step').forEach(step => {
+                    const stepDays = parseInt(step.dataset.days);
+                    if (days >= stepDays && ((stepDays === 15 && days >= 15) || (stepDays < 15 && days < stepDays + 3))) {
+                        step.classList.add('active');
+                    } else {
+                        step.classList.remove('active');
+                    }
+                });
             } else {
                 discountRow.style.display = 'none';
-                discountInfo.style.display = 'none';
+                discountViz.style.display = 'none';
             }
             
-            document.getElementById('totalCost').textContent = `${totalCost.toLocaleString()} ₽`;
+            document.getElementById('totalCost').textContent = `${total.toLocaleString()} ₽`;
+            
+            updateBookingButton();
+        }
+
+        // Update booking button
+        function updateBookingButton() {
+            const btn = document.getElementById('bookingBtn');
+            const hasSelectedCars = selectedCars.length > 0;
+            const hasDates = document.getElementById('startDate').value && document.getElementById('endDate').value;
+            const hasCard = selectedCard !== null;
+            const hasBranch = document.getElementById('branch').value;
+            
+            if (!hasSelectedCars) {
+                btn.textContent = 'Выберите автомобили';
+                btn.disabled = true;
+            } else if (!hasDates) {
+                btn.textContent = 'Выберите даты';
+                btn.disabled = true;
+            } else if (!hasBranch) {
+                btn.textContent = 'Выберите филиал';
+                btn.disabled = true;
+            } else if (!hasCard) {
+                btn.textContent = 'Выберите карту';
+                btn.disabled = true;
+            } else {
+                btn.textContent = `Оформить бронирование ${selectedCars.length > 1 ? `(${selectedCars.length} авто)` : ''}`;
+                btn.disabled = false;
+            }
         }
 
         // Set minimum dates
@@ -355,39 +1132,31 @@
             
             document.getElementById('startDate').min = today.toISOString().split('T')[0];
             document.getElementById('endDate').min = tomorrow.toISOString().split('T')[0];
+            
+            // Update end date minimum when start date changes
+            document.getElementById('startDate').addEventListener('change', function() {
+                const startDate = new Date(this.value);
+                const nextDay = new Date(startDate);
+                nextDay.setDate(nextDay.getDate() + 1);
+                
+                document.getElementById('endDate').min = nextDay.toISOString().split('T')[0];
+                
+                // Clear end date if it's before the new minimum
+                const endDate = document.getElementById('endDate').value;
+                if (endDate && new Date(endDate) <= startDate) {
+                    document.getElementById('endDate').value = '';
+                }
+            });
         }
 
-        // Update end date minimum when start date changes
-        document.getElementById('startDate').addEventListener('change', function() {
-            const startDate = new Date(this.value);
-            const nextDay = new Date(startDate);
-            nextDay.setDate(nextDay.getDate() + 1);
-            
-            document.getElementById('endDate').min = nextDay.toISOString().split('T')[0];
-            
-            // Clear end date if it's before the new minimum
-            const endDate = document.getElementById('endDate').value;
-            if (endDate && new Date(endDate) <= startDate) {
-                document.getElementById('endDate').value = '';
-            }
-            
-            calculateCost();
-        });
-
-        // Recalculate cost when any input changes
-        document.getElementById('endDate').addEventListener('change', calculateCost);
-        document.querySelectorAll('input[name="services"]').forEach(checkbox => {
-            checkbox.addEventListener('change', calculateCost);
-        });
-
-        // Form submission
-        document.getElementById('bookingForm').addEventListener('submit', function(e) {
+        // Handle booking submission
+        function handleBooking(e) {
             e.preventDefault();
             
-            const formData = new FormData(this);
+            const formData = new FormData(e.target);
             const data = Object.fromEntries(formData);
             
-            // Validate form
+            // Validate
             let isValid = true;
             document.querySelectorAll('.error-message').forEach(el => el.textContent = '');
             
@@ -410,18 +1179,18 @@
                 }
             }
             
-            if (!data.startTime) {
-                alert('Выберите время получения');
-                isValid = false;
-            }
-            
-            if (!data.endTime) {
-                alert('Выберите время возврата');
-                isValid = false;
-            }
-            
             if (!data.branch) {
                 alert('Выберите филиал');
+                isValid = false;
+            }
+            
+            if (selectedCars.length === 0) {
+                alert('Выберите хотя бы один автомобиль');
+                isValid = false;
+            }
+            
+            if (!selectedCard) {
+                alert('Выберите банковскую карту');
                 isValid = false;
             }
             
@@ -436,15 +1205,13 @@
                     // Create booking object
                     const booking = {
                         id: Date.now().toString(),
-                        car: selectedCar,
+                        cars: selectedCars,
                         user: currentUser,
+                        tariff: currentTariff,
                         startDate: data.startDate,
                         endDate: data.endDate,
-                        startTime: data.startTime,
-                        endTime: data.endTime,
                         branch: data.branch,
-                        services: Array.from(document.querySelectorAll('input[name="services"]:checked')).map(cb => cb.value),
-                        comments: data.comments,
+                        card: selectedCard,
                         totalCost: document.getElementById('totalCost').textContent,
                         status: 'confirmed',
                         createdAt: new Date().toISOString()
@@ -455,15 +1222,12 @@
                     bookings.push(booking);
                     localStorage.setItem('userBookings', JSON.stringify(bookings));
                     
-                    // Clear selected car
-                    localStorage.removeItem('selectedCar');
-                    
-                    // Redirect to history
+                    // Success
                     alert('Бронирование успешно оформлено!');
                     window.location.href = 'history.html';
                 }, 2000);
             }
-        });
+        }
 
         // Mobile menu toggle
         document.querySelector('.mobile-menu-btn').addEventListener('click', function() {
@@ -473,7 +1237,6 @@
 
         // Initialize page
         init();
-        setMinDates();
     </script>
 </body>
 </html>
