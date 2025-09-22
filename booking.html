@@ -460,7 +460,7 @@
             </div> -->
 
             <!-- Booking content -->
-            <div id="bookingContent" style="display: none;">
+            <div id="bookingContent" style="display: block;">
                 <div class="booking-container">
                     <!-- Main content -->
                     <div>
@@ -759,7 +759,6 @@
 
         // Initialize page
         function init() {
-            checkAuth();
             if (currentUser) {
                 displayAvailableCars();
                 displayClientData();
@@ -771,23 +770,6 @@
         }
 
         // Check authentication
-        function checkAuth() {
-            const userData = true;
-            if (userData) {
-                currentUser = JSON.parse(userData);
-                document.getElementById('userMenu').innerHTML = `
-                    <a href="profile.html" class="nav-item">👤 ${currentUser.firstName}</a>
-                    <a href="#" onclick="logout()" class="btn btn-outline">Выйти</a>
-                `;
-                document.getElementById('bookingContent').style.display = 'block';
-            } else {
-                document.getElementById('userMenu').innerHTML = `
-                    <a href="login.html" class="btn btn-outline">Войти</a>
-                    <a href="register.html" class="btn btn-primary">Регистрация</a>
-                `;
-                document.getElementById('authRequired').style.display = 'block';
-            }
-        }
 
         function logout() {
             localStorage.removeItem('currentUser');
